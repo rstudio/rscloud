@@ -1,0 +1,23 @@
+Package: rscloud
+Title: Provides an R client to the rstudio.cloud REST APIs
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Tareef",
+           family = "Kawaf",
+           role = c("aut", "cre"),
+           email = "tareef@rstudio.com")
+Description: Provides an R client to the rstudio.cloud REST APIs to facilitate the adding and removing of members to spaces.
+License: Apache 2.0
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    httr,
+    config,
+    tibble
+Remotes: 
+    tidyverse/tidyr
+RoxygenNote: 6.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
