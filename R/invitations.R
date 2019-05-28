@@ -2,6 +2,7 @@
 #'
 #' @param space_id id of the space we are interested in getting the invites for
 #'
+#' @export
 invitations_for_space <- function(space_id) {
     invitations_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "invitations"),
@@ -28,6 +29,7 @@ invitations_for_space <- function(space_id) {
 #'
 #' @param invitation_id is the id of an invitation that was previously created in the system.
 #'
+#' @export
 send_invitation <- function(invitation_id) {
     invitations_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "invitations", invitation_id, "send"))
@@ -44,6 +46,8 @@ send_invitation <- function(invitation_id) {
 #' Cancels an existing invitation.
 #'
 #' @param invitation_id is the id of an invitation that was previously created in the system.
+#'
+#' @export
 rescind_invitation <- function(invitation_id) {
 
     invitations_url <- httr::modify_url(url = .globals$API_URL,

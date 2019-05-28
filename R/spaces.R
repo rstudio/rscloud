@@ -2,7 +2,7 @@
 #' This will typically be the first call that a user makes to help determine which spaces they have access to and
 #' to retrieve the space_ids that aare needed in many of the later calls for managing space memberships and invitations.
 #'
-#' @seealso
+#' @export
 #'
 get_spaces <- function() {
     list_spaces_url <- httr::modify_url(url = .globals$API_URL,
@@ -23,6 +23,7 @@ get_spaces <- function() {
 #'
 #' @param space_id is an id of an existing space that the user has access to.
 #'
+#' @export
 roles_for_space <- function(space_id) {
     roles_for_space_url <- httr::modify_url(url = .globals$API_URL,
                                       path = c("v1", "spaces", space_id, "roles"))

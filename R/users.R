@@ -1,5 +1,7 @@
 #' Returns the list of members for this space.
 #' @param space_id is the id of the space that the user has access to
+#'
+#' @export
 members_for_space <- function(space_id) {
   members_for_space_url <- httr::modify_url(url = .globals$API_URL,
                                             path = c("v1", "spaces", space_id, "members"))
@@ -22,6 +24,8 @@ members_for_space <- function(space_id) {
 #' @param email_message the message to be sent to the user should the email_invite flag be set to TRUE
 #' @param space_role the desired role for the user in the space
 #' @param access_code TODO: No idea what this does, need to talk to the team about it :)
+#'
+#' @export
 add_user_to_space <- function(user_email, space_id,
                               email_message = "You are invited to this space",
                               email_invite = TRUE, space_role = "contributor",
@@ -59,6 +63,7 @@ add_user_to_space <- function(user_email, space_id,
 #' @param user_id the id of the user to be remoed from the space
 #' @param space_id the id for the space to be modified
 #'
+#' @export
 remove_user_from_space <- function(user_id, space_id) {
   remove_user_url <- httr::modify_url(url = .globals$API_URL,
                                       path = c("v1", "spaces", space_id, "members", user_id))

@@ -13,6 +13,3 @@ Returns the spaces that this user has access to.
 This will typically be the first call that a user makes to help determine which spaces they have access to and
 to retrieve the space_ids that aare needed in many of the later calls for managing space memberships and invitations.
 }
-\seealso{
-
-}

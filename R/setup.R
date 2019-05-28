@@ -1,5 +1,7 @@
 .globals <- new.env(parent = emptyenv())
 
+#'
+#' @export
 initialize_token <- function() {
   .globals$BASE_URL <- config::get("BASE_URL")
   .globals$API_URL <- paste0("https://", config::get("API_URL"))
@@ -20,6 +22,7 @@ initialize_token <- function() {
 #' As of May 28, 2019, the initial token that is granted is good for an hour.  If you receieve a 401 error,
 #' try running the refresh command once again, and then try your original command again.
 #'
+#' @export
 refresh_token <- function() {
     .globals$rscloud_token <- httr::oauth2.0_token(endpoint = .globals$rscloud_endpoint,
                                                     app = .globals$rscloud_app,
