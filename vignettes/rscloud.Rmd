@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The rscloud package is meant to provide the R user with access to the REST based APIs available in rstudio.cloud.  To get started, you will need to retrieve your CLIENT_KEY and CLIENT_SECRET and store them in a config.yml file (TODO: This may end up being a better .Renviron thing  I don't know).  
+The rscloud package is meant to provide the R user with access to the REST based APIs available in rstudio.cloud.  To get started, you will need to retrieve your CLIENT_KEY and CLIENT_SECRET and store them in a config.yml file.  Before running through any of the functions, you need to call the initialize_token function.  This will establish a connection that should be valid for 60 minutes.  You can call the refresh_token function if you need to run additional commands post the 60 minutes.
 
 This package will provide you with the ability to:
 

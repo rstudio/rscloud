@@ -3,11 +3,12 @@
 #' @param space_id id of the space we are interested in getting the invites for
 #'
 invitations_for_space <- function(space_id) {
-    invitations_url <- httr::modify_url(url = API_URL,
+    invitations_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "invitations"),
                                   query = c(filter = paste0("space_id:", space_id)))
 
-    req <- httr::GET(invitations_url, config(token = rscloud_token))
+    req <- httr::GET(invitations_url,
+                     httr::config(token = .globals$rscloud_token))
 
     httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
 
@@ -28,10 +29,11 @@ invitations_for_space <- function(space_id) {
 #' @param invitation_id is the id of an invitation that was previously created in the system.
 #'
 send_invitation <- function(invitation_id) {
-    invitations_url <- httr::modify_url(url = API_URL,
+    invitations_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "invitations", invitation_id, "send"))
 
-    req <- httr::POST(invitations_url, config(token = rscloud_token))
+    req <- httr::POST(invitations_url,
+                      httr::config(token = .globals$rscloud_token))
 
     httr::stop_for_status(req, paste0("Error resending invitation: ", invitation_id))
     r <- httr::content(req)
@@ -44,10 +46,12 @@ send_invitation <- function(invitation_id) {
 #' @param invitation_id is the id of an invitation that was previously created in the system.
 rescind_invitation <- function(invitation_id) {
 
-    invitations_url <- httr::modify_url(url = API_URL,
+    invitations_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "invitations", invitation_id))
 
-    req <- httr::DELETE(invitations_url, config(token = rscloud_token))
+    req <- httr::DELETE(invitations_url,
+                        httr::config(token = .globals$rscloud_token))
+
     httr::stop_for_status(req, paste0("Failed to remove invitation_id: ", invitation_id))
 
 }

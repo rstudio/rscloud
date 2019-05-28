@@ -1,10 +1,11 @@
 #' Returns the list of members for this space.
 #' @param space_id is the id of the space that the user has access to
 members_for_space <- function(space_id) {
-  members_for_space_url <- httr::modify_url(url = API_URL,
+  members_for_space_url <- httr::modify_url(url = .globals$API_URL,
                                             path = c("v1", "spaces", space_id, "members"))
 
-  req <- httr::GET(members_for_space_url, config(token = rscloud_token))
+  req <- httr::GET(members_for_space_url,
+                   httr::config(token = .globals$rscloud_token))
   httr::stop_for_status(req)
   json_list <- httr::content(req)
 
@@ -42,10 +43,12 @@ add_user_to_space <- function(user_email, space_id,
     user <<- c(user, access_code = access_code)
   }
 
-  add_member_url <- httr::modify_url(url = API_URL,
+  add_member_url <- httr::modify_url(url = .globals$API_URL,
                                      path = c("v1", "spaces", space_id, "members"))
 
-  req <- httr::POST(add_member_url, body = user, encode = "json", config(token = rscloud_token))
+  req <- httr::POST(add_member_url, body = user, encode = "json",
+                    httr::config(token = .globals$rscloud_token))
+
   httr::stop_for_status(req, paste0("Error adding user: ", user_email))
   r <- httr::content(req)
   r
@@ -57,9 +60,12 @@ add_user_to_space <- function(user_email, space_id,
 #' @param space_id the id for the space to be modified
 #'
 remove_user_from_space <- function(user_id, space_id) {
-  remove_user_url <- httr::modify_url(url = API_URL, path = c("v1", "spaces", space_id, "members", user_id))
+  remove_user_url <- httr::modify_url(url = .globals$API_URL,
+                                      path = c("v1", "spaces", space_id, "members", user_id))
 
-  req <- httr::DELETE(remove_user_url, config(token = rscloud_token))
+  req <- httr::DELETE(remove_user_url,
+                      httr::config(token = .globals$rscloud_token))
+
   httr::stop_for_status(req, paste0("Failed to remove user_id: ", user_id))
 
 }
