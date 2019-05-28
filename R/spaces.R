@@ -8,15 +8,18 @@ get_spaces <- function() {
     list_spaces_url <- httr::modify_url(url = .globals$API_URL,
                                   path = c("v1", "spaces"))
 
-    req <- httr::GET(list_spaces_url, httr::config(token = .globals$rscloud_token))
+    req <- httr::GET(list_spaces_url,
+                     httr::config(token = .globals$rscloud_token))
+
     httr::stop_for_status(req)
     json_list <- httr::content(req)
 
     ## TODO: Will need to paginate on those calls, but for now, let us grab the first one.
     ff <- tibble::tibble(spaces = json_list$spaces)
     df <- ff %>% tidyr::unnest_wider(spaces)
-    ## TODO: Re-order the headings
-    df
+
+    df %>% dplyr::rename(space_id = id) %>%
+      dplyr::select(space_id, name, description, dplyr::everything())
 }
 
 #' Returns the valid roles available for this space.
@@ -30,14 +33,14 @@ roles_for_space <- function(space_id) {
 
     req <- httr::GET(roles_for_space_url,
                      httr::config(token = .globals$rscloud_token))
+
     # TODO: Need to test for a 403 since we can't change a space that we don't have the right permissions for
     httr::stop_for_status(req, "You do not have permission to modify the space membership")
     json_list <- httr::content(req)
 
     ff <- tibble::tibble(roles = json_list$roles)
     df <- ff %>% tidyr::unnest_wider(roles)
-    df
+    df %>% dplyr::rename(role_id = id) %>%
+      dplyr::select(space_id, role_id, role, dplyr::everything())
 }
-
-## TODO: Add a create space, and a remove space function
 

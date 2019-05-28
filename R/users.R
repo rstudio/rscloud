@@ -13,8 +13,10 @@ members_for_space <- function(space_id) {
 
   ff <- tibble::tibble(users = json_list$users)
   df <- ff %>% tidyr::unnest_wider(users)
-  # TODO: Re-order the headings
-  df
+
+  df %>% dplyr::rename(user_id = id) %>%
+    dplyr::select(user_id, email, display_name, updated_time,
+           created_time, login_attempts, dplyr::everything())
 }
 
 #' Invite a user by email addrss to the space.
@@ -54,8 +56,6 @@ add_user_to_space <- function(user_email, space_id,
                     httr::config(token = .globals$rscloud_token))
 
   httr::stop_for_status(req, paste0("Error adding user: ", user_email))
-  r <- httr::content(req)
-  r
 }
 
 #' Removes the given user_id from the space

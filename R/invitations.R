@@ -16,12 +16,14 @@ invitations_for_space <- function(space_id) {
     r <- httr::content(req)
     ff <- tibble::tibble(invitations = r$invitations)
 
-    df <- ff %>% unnest_wider(invitations)
+    df <- ff %>% tidyr::unnest_wider(invitations)
 
-    #TODO: Debugging remove me.
-    print(paste("There were ", nrow(df), "invitations"))
+    if (nrow(df) == 0)
+      stop("There are no invitations for this space", call. = FALSE)
 
-    df
+    df %>% dplyr::rename(invitation_id = id) %>%
+      dplyr::select(invitation_id, space_id, email, type,
+                    accepted, expired, dplyr::everything())
 }
 
 
