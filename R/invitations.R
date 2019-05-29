@@ -4,26 +4,31 @@
 #'
 #' @export
 invitations_for_space <- function(space_id) {
-    invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                  path = c("v1", "invitations"),
-                                  query = c(filter = paste0("space_id:", space_id)))
 
-    req <- httr::GET(invitations_url,
-                     httr::config(token = .globals$rscloud_token))
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
 
-    httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
+  invitations_url <- httr::modify_url(url = .globals$API_URL,
+                                      path = c("v1", "invitations"),
+                                      query = c(filter = paste0("space_id:", space_id)))
 
-    r <- httr::content(req)
-    ff <- tibble::tibble(invitations = r$invitations)
+  req <- httr::GET(invitations_url,
+                   httr::config(token = .globals$rscloud_token))
 
-    df <- ff %>% tidyr::unnest_wider(invitations)
+  httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
 
-    if (nrow(df) == 0)
-      stop("There are no invitations for this space", call. = FALSE)
+  r <- httr::content(req)
+  ff <- tibble::tibble(invitations = r$invitations)
 
-    df %>% dplyr::rename(invitation_id = id) %>%
-      dplyr::select(invitation_id, space_id, email, type,
-                    accepted, expired, dplyr::everything())
+  df <- ff %>% tidyr::unnest_wider(invitations)
+
+  if (nrow(df) == 0)
+    stop("There are no invitations for this space", call. = FALSE)
+
+  df %>% dplyr::rename(invitation_id = id) %>%
+    dplyr::select(invitation_id, space_id, email, type,
+                  accepted, expired, dplyr::everything())
 }
 
 
@@ -33,16 +38,20 @@ invitations_for_space <- function(space_id) {
 #'
 #' @export
 send_invitation <- function(invitation_id) {
-    invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                  path = c("v1", "invitations", invitation_id, "send"))
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
 
-    req <- httr::POST(invitations_url,
-                      httr::config(token = .globals$rscloud_token))
+  invitations_url <- httr::modify_url(url = .globals$API_URL,
+                                      path = c("v1", "invitations", invitation_id, "send"))
 
-    httr::stop_for_status(req, paste0("Error resending invitation: ", invitation_id))
-    r <- httr::content(req)
+  req <- httr::POST(invitations_url,
+                    httr::config(token = .globals$rscloud_token))
 
-    tidyr::spread(tidyr::enframe(r), name, value)
+  httr::stop_for_status(req, paste0("Error resending invitation: ", invitation_id))
+  r <- httr::content(req)
+
+  tidyr::spread(tidyr::enframe(r), name, value)
 }
 
 #' Cancels an existing invitation.
@@ -52,13 +61,17 @@ send_invitation <- function(invitation_id) {
 #' @export
 rescind_invitation <- function(invitation_id) {
 
-    invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                  path = c("v1", "invitations", invitation_id))
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
 
-    req <- httr::DELETE(invitations_url,
-                        httr::config(token = .globals$rscloud_token))
+  invitations_url <- httr::modify_url(url = .globals$API_URL,
+                                      path = c("v1", "invitations", invitation_id))
 
-    httr::stop_for_status(req, paste0("Failed to remove invitation_id: ", invitation_id))
+  req <- httr::DELETE(invitations_url,
+                      httr::config(token = .globals$rscloud_token))
+
+  httr::stop_for_status(req, paste0("Failed to remove invitation_id: ", invitation_id))
 
 }
 

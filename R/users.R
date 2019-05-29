@@ -3,6 +3,12 @@
 #'
 #' @export
 members_for_space <- function(space_id) {
+
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
+
+
   members_for_space_url <- httr::modify_url(url = .globals$API_URL,
                                             path = c("v1", "spaces", space_id, "members"))
 
@@ -32,6 +38,10 @@ add_user_to_space <- function(user_email, space_id,
                               email_message = "You are invited to this space",
                               email_invite = TRUE, space_role = "contributor",
                               access_code = NULL) {
+
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
 
   roles <- roles_for_space(space_id)
 
@@ -65,6 +75,11 @@ add_user_to_space <- function(user_email, space_id,
 #'
 #' @export
 remove_user_from_space <- function(user_id, space_id) {
+
+  if (!exists("API_URL", .globals))
+    stop("Please run rscloud::initialize_token() prior calling any other functions",
+         call. = FALSE)
+
   remove_user_url <- httr::modify_url(url = .globals$API_URL,
                                       path = c("v1", "spaces", space_id, "members", user_id))
 

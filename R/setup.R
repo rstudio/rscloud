@@ -1,5 +1,6 @@
 .globals <- new.env(parent = emptyenv())
 
+#' Initializes the token that will be used in all future requests.
 #'
 #' @export
 initialize_token <- function() {
