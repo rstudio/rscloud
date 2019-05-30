@@ -50,7 +50,9 @@ members_for_space <- function(space_id) {
 
   df %>% dplyr::rename(user_id = id) %>%
     dplyr::select(user_id, email, display_name, updated_time,
-           created_time, login_attempts, dplyr::everything())
+           created_time, login_attempts, dplyr::everything()) %>%
+    dplyr::mutate(created_time = as.POSIXct(strptime(created_time, "%Y-%m-%dT%H:%M:%S")),
+                  updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S")))
 }
 
 #' Invite a user by email addrss to the space.

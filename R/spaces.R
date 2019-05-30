@@ -49,7 +49,9 @@ get_spaces <- function() {
     tidyr::unnest_wider(spaces)
 
   df %>% dplyr::rename(space_id = id) %>%
-    dplyr::select(space_id, name, description, dplyr::everything())
+    dplyr::select(space_id, name, description, dplyr::everything()) %>%
+    dplyr::mutate(created_time = as.POSIXct(strptime(created_time, "%Y-%m-%dT%H:%M:%S")),
+                  updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S")))
 }
 
 #' Returns the valid roles available for this space.
@@ -79,6 +81,8 @@ roles_for_space <- function(space_id) {
   ff <- tibble::tibble(roles = json_list$roles)
   df <- ff %>% tidyr::unnest_wider(roles)
   df %>% dplyr::rename(role_id = id) %>%
-    dplyr::select(space_id, role_id, role, dplyr::everything())
+    dplyr::select(space_id, role_id, role, dplyr::everything()) %>%
+    dplyr::mutate(created_time = as.POSIXct(strptime(created_time, "%Y-%m-%dT%H:%M:%S")),
+                  updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S")))
 }
 

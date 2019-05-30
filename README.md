@@ -5,7 +5,7 @@ To get started please install using:
 
 `remotes::install_github("rstudio/rscloud")`
 
-To get started you will need to create config.yml file that includes the following information.
+To get started you will need to create config.yml file that includes the following information for staging.
 
 ```
 default:
@@ -14,6 +14,17 @@ default:
  BASE_URL: "staging.rstudio.cloud"
  API_URL: "api.staging.shinyapps.io"
 ```
+
+For production you would configure it as follows:
+
+```
+default:
+ CLIENT_ID: "YOUR CLIENT ID"
+ CLIENT_SECRET: "YOUR CLIENT SECRET" 
+ BASE_URL: "rstudio.cloud"
+ API_URL: "api.shinyapps.io"
+```
+
 
 You should be able to test out that it is working by running:
 
