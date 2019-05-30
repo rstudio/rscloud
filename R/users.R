@@ -17,6 +17,10 @@ members_for_space <- function(space_id) {
   httr::stop_for_status(req)
   json_list <- httr::content(req)
 
+  if (length(json_list$users) == 0)
+    stop(paste0("No users found for space: ", space_id),
+         call. = FALSE)
+
   n_pages <- ceiling(json_list$total / json_list$count)
 
   batch_size <- json_list$count

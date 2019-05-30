@@ -19,6 +19,9 @@ get_spaces <- function() {
   httr::stop_for_status(req)
   json_list <- httr::content(req)
 
+  if (length(json_list$spaces) == 0)
+    stop("No spaces available for this user.", call. = FALSE)
+
   n_pages <- ceiling(json_list$total / json_list$count)
 
   batch_size <- json_list$count
@@ -69,6 +72,9 @@ roles_for_space <- function(space_id) {
   # TODO: Need to test for a 403 since we can't change a space that we don't have the right permissions for
   httr::stop_for_status(req, "You do not have permission to modify the space membership")
   json_list <- httr::content(req)
+
+  if (length(json_list$roles) == 0)
+    stop("No roles found for this space", call. = FALSE)
 
   ff <- tibble::tibble(roles = json_list$roles)
   df <- ff %>% tidyr::unnest_wider(roles)
