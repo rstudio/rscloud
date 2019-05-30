@@ -10,11 +10,11 @@ invitations_for_space <- function(space_id) {
          call. = FALSE)
 
   invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                      path = c("v1", "invitations"),
-                                      query = c(filter = paste0("space_id:", space_id)))
+                                      path = c("v1", "invitations"))
 
   req <- httr::GET(invitations_url,
-                   httr::config(token = .globals$rscloud_token))
+                   httr::config(token = .globals$rscloud_token),
+                   query = list("filter" = paste0("space_id:", space_id)))
 
   httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
 
@@ -32,7 +32,8 @@ invitations_for_space <- function(space_id) {
     } else {
       req <- httr::GET(invitations_url,
                        httr::config(token = .globals$rscloud_token),
-                       query=list("offset"=(i-1)*batch_size))
+                       query=list("filter" = paste0("space_id:", space_id),
+                                  "offset" = (i-1)*batch_size))
 
       httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
 
