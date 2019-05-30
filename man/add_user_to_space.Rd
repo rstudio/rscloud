@@ -6,7 +6,7 @@
 \usage{
 add_user_to_space(user_email, space_id,
   email_message = "You are invited to this space", email_invite = TRUE,
-  space_role = "contributor", access_code = NULL)
+  space_role = "contributor")
 }
 \arguments{
 \item{user_email}{email address of the user to add}
@@ -16,8 +16,6 @@ add_user_to_space(user_email, space_id,
 \item{email_invite}{indicates whether an email should be sent to the user with the invite}
 
 \item{space_role}{the desired role for the user in the space}
-
-\item{access_code}{TODO: No idea what this does, need to talk to the team about it :)}
 }
 \description{
 Invite a user by email addrss to the space.

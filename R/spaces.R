@@ -19,9 +19,31 @@ get_spaces <- function() {
   httr::stop_for_status(req)
   json_list <- httr::content(req)
 
-  ## TODO: Will need to paginate on those calls, but for now, let us grab the first one.
-  ff <- tibble::tibble(spaces = json_list$spaces)
-  df <- ff %>% tidyr::unnest_wider(spaces)
+  n_pages <- ceiling(json_list$total / json_list$count)
+
+  batch_size <- json_list$count
+
+  pages <- vector("list", n_pages)
+
+  for (i in seq_along(pages)) {
+
+    if (i == 1) {
+      pages[[1]] <- json_list$spaces
+    } else {
+      req <- httr::GET(list_spaces_url,
+                       httr::config(token = .globals$rscloud_token),
+                       query=list("offset"=(i-1)*batch_size))
+      httr::stop_for_status(req)
+      json_list <- httr::content(req)
+
+      pages[[i]] <- json_list$spaces
+    }
+  }
+
+  ff <- tibble::tibble(spaces = pages)
+  df <- ff %>%
+    tidyr::unnest_longer(spaces) %>%
+    tidyr::unnest_wider(spaces)
 
   df %>% dplyr::rename(space_id = id) %>%
     dplyr::select(space_id, name, description, dplyr::everything())

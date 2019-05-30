@@ -18,13 +18,37 @@ invitations_for_space <- function(space_id) {
 
   httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
 
-  r <- httr::content(req)
-  ff <- tibble::tibble(invitations = r$invitations)
+  json_list <- httr::content(req)
 
-  df <- ff %>% tidyr::unnest_wider(invitations)
+  n_pages <- ceiling(json_list$total / json_list$count)
 
-  if (nrow(df) == 0)
+  batch_size <- json_list$count
+
+  pages <- vector("list", n_pages)
+
+  for (i in seq_along(pages)) {
+    if (i == 1) {
+      pages[[1]] <- json_list$invitations
+    } else {
+      req <- httr::GET(invitations_url,
+                       httr::config(token = .globals$rscloud_token),
+                       query=list("offset"=(i-1)*batch_size))
+
+      httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
+
+      json_list <- httr::content(req)
+      pages[[i]] <- json_list$invitations
+    }
+  }
+
+  ff <- tibble::tibble(invitations = pages)
+
+  if (nrow(ff) == 0)
     stop("There are no invitations for this space", call. = FALSE)
+
+  df <- ff %>%
+    tidyr::unnest_longer(invitations) %>%
+    tidyr::unnest_wider(invitations)
 
   df %>% dplyr::rename(invitation_id = id) %>%
     dplyr::select(invitation_id, space_id, email, type,

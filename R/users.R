@@ -17,8 +17,32 @@ members_for_space <- function(space_id) {
   httr::stop_for_status(req)
   json_list <- httr::content(req)
 
-  ff <- tibble::tibble(users = json_list$users)
-  df <- ff %>% tidyr::unnest_wider(users)
+  n_pages <- ceiling(json_list$total / json_list$count)
+
+  batch_size <- json_list$count
+
+  pages <- vector("list", n_pages)
+
+  for (i in seq_along(pages)) {
+
+    if (i == 1) {
+      pages[[1]] <- json_list$users
+    } else {
+      req <- httr::GET(members_for_space_url,
+                       httr::config(token = .globals$rscloud_token),
+                       query=list("offset"=(i-1)*batch_size))
+      httr::stop_for_status(req)
+      json_list <- httr::content(req)
+
+      pages[[i]] <- json_list$users
+
+    }
+  }
+
+  ff <- tibble::tibble(users = pages)
+  df <- ff %>%
+    tidyr::unnest_longer(users) %>%
+    tidyr::unnest_wider(users)
 
   df %>% dplyr::rename(user_id = id) %>%
     dplyr::select(user_id, email, display_name, updated_time,
@@ -31,13 +55,11 @@ members_for_space <- function(space_id) {
 #' @param email_invite indicates whether an email should be sent to the user with the invite
 #' @param email_message the message to be sent to the user should the email_invite flag be set to TRUE
 #' @param space_role the desired role for the user in the space
-#' @param access_code TODO: No idea what this does, need to talk to the team about it :)
 #'
 #' @export
 add_user_to_space <- function(user_email, space_id,
                               email_message = "You are invited to this space",
-                              email_invite = TRUE, space_role = "contributor",
-                              access_code = NULL) {
+                              email_invite = TRUE, space_role = "contributor") {
 
   if (!exists("API_URL", .globals))
     stop("Please run rscloud::initialize_token() prior calling any other functions",
@@ -52,11 +74,7 @@ add_user_to_space <- function(user_email, space_id,
 
 
   if (email_invite) {
-    user <<- c(user, invite_email = email_invite, invite_email_message = email_message)
-  }
-
-  if (!is.null(access_code)) {
-    user <<- c(user, access_code = access_code)
+    user <- c(user, invite_email = email_invite, invite_email_message = email_message)
   }
 
   add_member_url <- httr::modify_url(url = .globals$API_URL,
