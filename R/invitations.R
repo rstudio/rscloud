@@ -20,6 +20,9 @@ invitations_for_space <- function(space_id) {
 
   json_list <- httr::content(req)
 
+  if(length(json_list$invitations) == 0)
+    stop(paste0("No invitations found for space: ", space_id), call. = FALSE)
+
   n_pages <- ceiling(json_list$total / json_list$count)
 
   batch_size <- json_list$count
