@@ -24,4 +24,6 @@ rscloud::get_spaces()
 
 ```
 
+**NOTE:** Please select 2 when httr asks if you want to cache with httr-oauth since we haven't implemented the refresh protocol in our oauth flows.  If you do cache it, you will want to delete the .httr-oauth when everything stops working 61 minutes later :)
+
 
