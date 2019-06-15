@@ -4,18 +4,11 @@
 #' @export
 members_for_space <- function(space_id) {
 
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
-
-  members_for_space_url <- httr::modify_url(url = .globals$API_URL,
-                                            path = c("v1", "spaces", space_id, "members"))
-
-  req <- httr::GET(members_for_space_url,
-                   httr::config(token = .globals$rscloud_token))
-  httr::stop_for_status(req)
-  json_list <- httr::content(req)
+  json_list <- rscloud_GET(path = c("spaces", space_id, "members"),
+                           task = paste("Error retrieving members for space: ", space_id)
+                           )
 
   if (length(json_list$users) == 0)
     stop(paste0("No users found for space: ", space_id),
@@ -32,17 +25,17 @@ members_for_space <- function(space_id) {
     if (i == 1) {
       pages[[1]] <- json_list$users
     } else {
-      req <- httr::GET(members_for_space_url,
-                       httr::config(token = .globals$rscloud_token),
-                       query=list("offset"=(i-1)*batch_size))
-      httr::stop_for_status(req)
-      json_list <- httr::content(req)
-
-      pages[[i]] <- json_list$users
-
+      offset <- (i - 1) * batch_size
+      pages[[i]] <- rscloud_GET(path = c("spaces", space_id, "members"),
+                                query = list(offset = offset),
+                                task = paste("Error retrieving members for space: ", space_id)
+                                )$users
     }
   }
 
+  # HW: Need to consider length-0 case
+
+  # Rectangling
   ff <- tibble::tibble(users = pages)
   df <- ff %>%
     tidyr::unnest_longer(users) %>%
@@ -51,8 +44,7 @@ members_for_space <- function(space_id) {
   df %>% dplyr::rename(user_id = id) %>%
     dplyr::select(user_id, email, display_name, updated_time,
            created_time, login_attempts, dplyr::everything()) %>%
-    dplyr::mutate(created_time = as.POSIXct(strptime(created_time, "%Y-%m-%dT%H:%M:%S")),
-                  updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S")))
+    parse_times()
 }
 
 #' Invite a user by email addrss to the space.
@@ -67,9 +59,7 @@ add_user_to_space <- function(user_email, space_id,
                               email_message = "You are invited to this space",
                               email_invite = TRUE, space_role = "contributor") {
 
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
   roles <- roles_for_space(space_id)
 
@@ -83,13 +73,8 @@ add_user_to_space <- function(user_email, space_id,
     user <- c(user, invite_email = email_invite, invite_email_message = email_message)
   }
 
-  add_member_url <- httr::modify_url(url = .globals$API_URL,
-                                     path = c("v1", "spaces", space_id, "members"))
-
-  req <- httr::POST(add_member_url, body = user, encode = "json",
-                    httr::config(token = .globals$rscloud_token))
-
-  httr::stop_for_status(req, paste0("Error adding user: ", user_email))
+  req <- rscloud_POST(path = c("spaces", space_id, "members"),
+                      body = user)
 }
 
 #' Removes the given user_id from the space
@@ -100,16 +85,8 @@ add_user_to_space <- function(user_email, space_id,
 #' @export
 remove_user_from_space <- function(user_id, space_id) {
 
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
-  remove_user_url <- httr::modify_url(url = .globals$API_URL,
-                                      path = c("v1", "spaces", space_id, "members", user_id))
-
-  req <- httr::DELETE(remove_user_url,
-                      httr::config(token = .globals$rscloud_token))
-
-  httr::stop_for_status(req, paste0("Failed to remove user_id: ", user_id))
-
+  rscloud_DELETE(path = c("spaces", space_id, "members", user_id),
+                 task = paste0("Failed to remove user_id: ", user_id))
 }

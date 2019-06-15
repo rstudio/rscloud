@@ -2,10 +2,14 @@
 % Please edit documentation in R/setup.R
 \name{initialize_token}
 \alias{initialize_token}
-\title{Initializes the token that will be used in all future requests.}
+\title{Initializes the token that will be used in all future requests.
+As of June 2019, the initial token that is granted is good for an hour.  If you receieve a 401 error,
+try running the `initialize_token` command once again, and then try your original command again.}
 \usage{
 initialize_token()
 }
 \description{
 Initializes the token that will be used in all future requests.
+As of June 2019, the initial token that is granted is good for an hour.  If you receieve a 401 error,
+try running the `initialize_token` command once again, and then try your original command again.
 }

@@ -5,20 +5,12 @@
 #' @export
 invitations_for_space <- function(space_id) {
 
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
-  invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                      path = c("v1", "invitations"))
+  json_list <- rscloud_GET("invitations",
+                             query = list("filter" = paste0("space_id:", space_id)),
+                             task = paste0("Error retrieving invitations for: ", space_id))
 
-  req <- httr::GET(invitations_url,
-                   httr::config(token = .globals$rscloud_token),
-                   query = list("filter" = paste0("space_id:", space_id)))
-
-  httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
-
-  json_list <- httr::content(req)
 
   if(length(json_list$invitations) == 0)
     stop(paste0("No invitations found for space: ", space_id), call. = FALSE)
@@ -33,15 +25,11 @@ invitations_for_space <- function(space_id) {
     if (i == 1) {
       pages[[1]] <- json_list$invitations
     } else {
-      req <- httr::GET(invitations_url,
-                       httr::config(token = .globals$rscloud_token),
-                       query=list("filter" = paste0("space_id:", space_id),
-                                  "offset" = (i-1)*batch_size))
-
-      httr::stop_for_status(req, paste0("Error retrieving invitations for: ", space_id))
-
-      json_list <- httr::content(req)
-      pages[[i]] <- json_list$invitations
+      pages[[i]] <- rsconnect_GET("invitations",
+                    query = list("filter" = paste0("space_id:", space_id),
+                                 "offset" = (i-1)*batch_size),
+                    task = paste0("Error retrieving invitations for: ", space_id)
+                    )$invitations
     }
   }
 
@@ -66,17 +54,11 @@ invitations_for_space <- function(space_id) {
 #'
 #' @export
 send_invitation <- function(invitation_id) {
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
-  invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                      path = c("v1", "invitations", invitation_id, "send"))
+  req <- rscloud_POST(path = c("invitations", invitation_id, "send"),
+                      task = paste0("Error resending invitation: ", invitation_id))
 
-  req <- httr::POST(invitations_url,
-                    httr::config(token = .globals$rscloud_token))
-
-  httr::stop_for_status(req, paste0("Error resending invitation: ", invitation_id))
   r <- httr::content(req)
 
   tidyr::spread(tidyr::enframe(r), name, value)
@@ -89,17 +71,9 @@ send_invitation <- function(invitation_id) {
 #' @export
 rescind_invitation <- function(invitation_id) {
 
-  if (!exists("API_URL", .globals))
-    stop("Please run rscloud::initialize_token() prior calling any other functions",
-         call. = FALSE)
+  check_auth()
 
-  invitations_url <- httr::modify_url(url = .globals$API_URL,
-                                      path = c("v1", "invitations", invitation_id))
-
-  req <- httr::DELETE(invitations_url,
-                      httr::config(token = .globals$rscloud_token))
-
-  httr::stop_for_status(req, paste0("Failed to remove invitation_id: ", invitation_id))
-
+  req <- rscloud_DELETE(path = c("invitations", invitation_id),
+                        task = paste0("Failed to remove invitation_id: ", invitation_id))
 }
 
