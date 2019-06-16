@@ -62,7 +62,7 @@ initialize_token <- function() {
       client_credentials = TRUE,
       cache = FALSE
     )
-    .globals$last_refresh <- as.POSIXct(Sys.Date())
+    .globals$last_refresh <- as.POSIXct(Sys.time())
 }
 
 

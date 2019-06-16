@@ -102,8 +102,6 @@ projects_for_space <- function(space_id) {
     }
   }
 
-  #TODO: Trim out some of the columns that are unneeded
-
   # Rectangling
   df <- tibble::tibble(projects = pages)
   df %>%

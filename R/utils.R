@@ -6,9 +6,8 @@ check_auth <- function() {
     stop("The `initialize_token()` command has not been run yet.  Please run it first and try this function again. ",
          call. = FALSE)
 
-  if (as.numeric(difftime(.globals$last_refresh, as.POSIXct(Sys.time()),
+  if (as.numeric(difftime(as.POSIXct(Sys.time()), .globals$last_refresh,
                           units = "mins")) > 59) {
-    print("Token was expired, refreshing")
     initialize_token()
   }
 
