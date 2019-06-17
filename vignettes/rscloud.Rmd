@@ -24,6 +24,7 @@ This package will provide you with the ability to:
 * Invite users to a space
 * Add/remove users from a space
 * Discover the roles in a space
+* Retrieve the list of projects in a space
 
 The current release of the package does not support the creation/deletion of spaces at this time.
 
@@ -36,8 +37,6 @@ For this release, your config.yml file needs to look something like this:
 default:
  CLIENT_ID: "YOUR CLIENT ID"
  CLIENT_SECRET: "YOUR CLIENT SECRET" 
- BASE_URL: "staging.rstudio.cloud"
- API_URL: "api.staging.shinyapps.io"
 ```
 
 ## Running rscloud
