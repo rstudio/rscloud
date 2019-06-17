@@ -3,7 +3,11 @@
 .globals <- new.env(parent = emptyenv())
 
 .onLoad <- function(...) {
-  setup_token()
+  if(!file.exists("config.yml")) {
+    print("No config.yml file available.  Please add it and run the `setup_token()` function")
+  } else {
+    setup_token()
+  }
 }
 
 
