@@ -19,7 +19,7 @@ Imports:
     tidyr,
     vctrs
 Remotes: 
-    tidyverse/tidyr
+    tidyverse/tidyr,
     r-lib/vctrs
 RoxygenNote: 6.1.1
 Suggests: 
