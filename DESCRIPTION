@@ -17,10 +17,12 @@ Imports:
     dplyr,
     magrittr,
     tidyr,
-    vctrs
+    vctrs,
+    rlang
 Remotes: 
     tidyverse/tidyr,
-    r-lib/vctrs
+    r-lib/vctrs,
+    r-lib/rlang
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
