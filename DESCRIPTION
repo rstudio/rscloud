@@ -14,7 +14,8 @@ Imports:
     httr,
     config,
     tibble,
-    dplyr
+    dplyr,
+    magrittr
 Remotes: 
     tidyverse/tidyr
 RoxygenNote: 6.1.1
