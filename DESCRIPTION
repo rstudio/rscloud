@@ -16,9 +16,11 @@ Imports:
     tibble,
     dplyr,
     magrittr,
-    tidyr
+    tidyr,
+    vctrs
 Remotes: 
     tidyverse/tidyr
+    r-lib/vctrs
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
