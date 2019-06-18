@@ -2,17 +2,6 @@
 
 .globals <- new.env(parent = emptyenv())
 
-.onLoad <- function(...) {
-  if(!file.exists("config.yml")) {
-    print("No config.yml file available.  Please add it and run the `setup_token()` function")
-  } else {
-    setup_token()
-  }
-}
-
-
-
-
 #'
 #' This is called automatically on package load; you should only need to call yourself
 #' if you've changed the setting in `config.yml`
@@ -20,9 +9,11 @@
 #' @export
 #' @keywords internal
 setup_token <- function() {
+  if(!file.exists("config.yml")) {
+    stop("No config.yml file available.  Please add it and re-run the `setup_token()` function", call. = FALSE)
+  }
 
   ## Check to make sure that the CLIENT_ID and Secrets are defined in the config.yml
-  ## TODO: Is there a clean way to test that config.yml file is not there in the first place?
   key <-  config::get("CLIENT_ID")
 
   if (is.null(key))
@@ -59,14 +50,19 @@ setup_token <- function() {
 #'
 #' @export
 initialize_token <- function() {
+  if (!exists("setup_run", .globals)) {
+    setup_token()
+    .globals$setup_run <- TRUE
+  }
+
   #Cache is set to FALSE because I don't know if we can get the refresh flow to work properly.  Implementing the poor man's refresh using a time based model.
-    .globals$rscloud_token <- httr::oauth2.0_token(
-      endpoint = .globals$rscloud_endpoint,
-      app = .globals$rscloud_app,
-      client_credentials = TRUE,
-      cache = FALSE
-    )
-    .globals$last_refresh <- as.POSIXct(Sys.time())
+  .globals$rscloud_token <- httr::oauth2.0_token(
+    endpoint = .globals$rscloud_endpoint,
+    app = .globals$rscloud_app,
+    client_credentials = TRUE,
+    cache = FALSE
+  )
+  .globals$last_refresh <- as.POSIXct(Sys.time())
 }
 
 
