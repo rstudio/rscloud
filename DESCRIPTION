@@ -17,6 +17,7 @@ Imports:
     dplyr,
     magrittr,
     tidyr,
+    httpuv,
     vctrs,
     rlang
 Remotes: 
