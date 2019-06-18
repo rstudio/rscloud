@@ -78,6 +78,8 @@ projects_for_space <- function(space_id) {
 
   check_auth()
 
+  #TODO: Provide the ability to provide additional filters
+
   json_list <- rscloud_GET("projects",
                            query = list("filter" = paste0("space_id:", space_id)),
                            task = paste("Error retrieving projects for space: ",space_id)
@@ -96,7 +98,7 @@ projects_for_space <- function(space_id) {
     } else {
       offset <- (i - 1) * batch_size
       pages[[i]] <- rscloud_GET("projects",
-                                query = list("filter" = paste0("space_id", space_id),
+                                query = list("filter" = paste0("space_id:", space_id),
                                              offset = offset),
                                 task = paste("Error retrieving projects for space: ", space_id))$projects
     }
