@@ -61,7 +61,7 @@ send_invitation <- function(invitation_id) {
 
   r <- httr::content(req)
 
-  tidyr::spread(tidyr::enframe(r), name, value)
+  tidyr::spread(tibble::enframe(r), name, value)
 }
 
 #' Cancels an existing invitation.
