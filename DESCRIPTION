@@ -13,7 +13,8 @@ LazyData: true
 Imports: 
     httr,
     config,
-    tibble
+    tibble,
+    dplyr
 Remotes: 
     tidyverse/tidyr
 RoxygenNote: 6.1.1
