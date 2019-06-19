@@ -39,9 +39,8 @@ members_for_space <- function(space_id) {
     tidyr::unnest_longer(users) %>%
     tidyr::unnest_wider(users)
 
-  #TODO: Get rid of the rename, just do it in the select
-  df %>% dplyr::rename(user_id = id) %>%
-    dplyr::select(user_id, email, display_name, updated_time,
+  df %>%
+    dplyr::select(user_id = id, email, display_name, updated_time,
            created_time, login_attempts, dplyr::everything()) %>%
     parse_times()
 }

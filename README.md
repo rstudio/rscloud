@@ -21,7 +21,6 @@ remotes::install_github("rstudio/rscloud")
 
 library(rscloud)
 
-setup_token()
 initialize_token()
 spaces <- get_spaces()
 
