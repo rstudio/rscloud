@@ -2,13 +2,15 @@
 % Please edit documentation in R/invitations.R
 \name{rescind_invitation}
 \alias{rescind_invitation}
-\title{Cancels an existing invitation.}
+\title{Cancel existing invitation}
 \usage{
 rescind_invitation(invitation_id)
 }
 \arguments{
-\item{invitation_id}{is the id of an invitation that was previously created in the system.}
+\item{invitation_id}{ID number of the invitation}
 }
 \description{
-Cancels an existing invitation.
+Cancels an existing invitation with a given invitation ID that was previously
+created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
+this function does not also depend on a space ID.
 }

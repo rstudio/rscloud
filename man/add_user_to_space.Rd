@@ -2,21 +2,24 @@
 % Please edit documentation in R/users.R
 \name{add_user_to_space}
 \alias{add_user_to_space}
-\title{Invite a user by email addrss to the space.}
+\title{Invite user to space}
 \usage{
-add_user_to_space(user_email, space_id,
-  email_message = "You are invited to this space", email_invite = TRUE,
+add_user_to_space(user_email, space_id, email_invite = TRUE,
+  email_message = "You are invited to this space",
   space_role = "contributor")
 }
 \arguments{
-\item{user_email}{email address of the user to add}
+\item{user_email}{Email address of the user to add}
 
-\item{email_message}{the message to be sent to the user should the email_invite flag be set to TRUE}
+\item{space_id}{ID number of the space}
 
-\item{email_invite}{indicates whether an email should be sent to the user with the invite}
+\item{email_invite}{Indicates whether an email should be sent to the user with the invite, `TRUE` by default}
 
-\item{space_role}{the desired role for the user in the space}
+\item{email_message}{Message to be sent to the user should the `email_invite` flag be set to `TRUE`}
+
+\item{space_role}{Desired role for the user in the space}
 }
 \description{
-Invite a user by email addrss to the space.
+Invites a user to a space with their email address and with a given role,
+and can also prompt an invitation email if `email_invite` is set to `TRUE`.
 }

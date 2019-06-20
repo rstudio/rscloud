@@ -2,13 +2,13 @@
 % Please edit documentation in R/invitations.R
 \name{invitations_for_space}
 \alias{invitations_for_space}
-\title{Retrieves the list of all outstanding invitations for the given space}
+\title{Retrieve list of outstanding invitations}
 \usage{
 invitations_for_space(space_id)
 }
 \arguments{
-\item{space_id}{id of the space we are interested in getting the invites for}
+\item{space_id}{ID number of the space}
 }
 \description{
-Retrieves the list of all outstanding invitations for the given space
+Retrieves the list of all outstanding invitations for the given space.
 }

@@ -1,10 +1,9 @@
-
-
-
-
-#' Returns the spaces that this user has access to.
-#' This will typically be the first call that a user makes to help determine which spaces they have access to and
-#' to retrieve the space_ids that aare needed in many of the later calls for managing space memberships and invitations.
+#' Return spaces that user has access to
+#'
+#' This will typically be the first call that a user makes to help determine
+#' which spaces they have access to and to retrieve the space IDs that are
+#' needed in many of the later calls for managing space memberships and
+#' invitations.
 #'
 #' @export
 #'
@@ -43,9 +42,12 @@ get_spaces <- function() {
     parse_times()
 }
 
-#' Returns the valid roles available for this space.
+
+#' Return valid roles for space
 #'
-#' @param space_id is an id of an existing space that the user has access to.
+#' Returns valid roles for a given space and the permissions associated with each role.
+#'
+#' @param space_id ID number of the space
 #'
 #' @export
 roles_for_space <- function(space_id) {
@@ -69,9 +71,12 @@ roles_for_space <- function(space_id) {
     parse_times()
 }
 
-#' Returns the projecst for this space
+
+#' Return projects in space
 #'
-#' @param space_id is an id of an existing space that the user has access to.
+#' Returns the projects in a given space.
+#'
+#' @param space_id ID number of the space
 #'
 #' @export
 projects_for_space <- function(space_id) {
@@ -113,3 +118,4 @@ projects_for_space <- function(space_id) {
     parse_times() %>%
     dplyr::select(id, name, status, updated_time, display_name, author_id, visibility, created_time)
 }
+
