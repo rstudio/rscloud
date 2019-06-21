@@ -1,6 +1,8 @@
-#' Retrieves the list of all outstanding invitations for the given space
+#' Retrieve list of outstanding invitations
 #'
-#' @param space_id id of the space we are interested in getting the invites for
+#' Retrieves the list of all outstanding invitations for the given space.
+#'
+#' @param space_id ID number of the space
 #'
 #' @export
 invitations_for_space <- function(space_id) {
@@ -48,9 +50,13 @@ invitations_for_space <- function(space_id) {
 }
 
 
-#' Sends or resends the invitation to the recipient
+#' Send or resend invitation
 #'
-#' @param invitation_id is the id of an invitation that was previously created in the system.
+#' Sends or resends invitation with a given invitation ID that was previously
+#' created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
+#' this function does not also depend on a space ID.
+#'
+#' @param invitation_id ID number of the invitation
 #'
 #' @export
 send_invitation <- function(invitation_id) {
@@ -64,9 +70,14 @@ send_invitation <- function(invitation_id) {
   tidyr::spread(tibble::enframe(r), name, value)
 }
 
-#' Cancels an existing invitation.
+
+#' Cancel existing invitation
 #'
-#' @param invitation_id is the id of an invitation that was previously created in the system.
+#' Cancels an existing invitation with a given invitation ID that was previously
+#' created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
+#' this function does not also depend on a space ID.
+#'
+#' @param invitation_id ID number of the invitation
 #'
 #' @export
 rescind_invitation <- function(invitation_id) {

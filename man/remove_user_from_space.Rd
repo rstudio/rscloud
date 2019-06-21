@@ -2,15 +2,15 @@
 % Please edit documentation in R/users.R
 \name{remove_user_from_space}
 \alias{remove_user_from_space}
-\title{Removes the given user_id from the space}
+\title{Remove user from space}
 \usage{
 remove_user_from_space(user_id, space_id)
 }
 \arguments{
-\item{user_id}{the id of the user to be remoed from the space}
+\item{user_id}{ID number of the user}
 
-\item{space_id}{the id for the space to be modified}
+\item{space_id}{ID number of the space}
 }
 \description{
-Removes the given user_id from the space
+Removes a user with a given user ID from the space.
 }

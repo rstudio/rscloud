@@ -2,13 +2,14 @@
 % Please edit documentation in R/users.R
 \name{members_for_space}
 \alias{members_for_space}
-\title{Returns the list of members for this space.}
+\title{Get list of members for space}
 \usage{
 members_for_space(space_id)
 }
 \arguments{
-\item{space_id}{is the id of the space that the user has access to}
+\item{space_id}{ID number of the space}
 }
 \description{
-Returns the list of members for this space.
+Returns the list of members for a given space. You must either be the admin
+of the space or your role must have permissions to see the members list.
 }

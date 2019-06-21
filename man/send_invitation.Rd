@@ -2,13 +2,15 @@
 % Please edit documentation in R/invitations.R
 \name{send_invitation}
 \alias{send_invitation}
-\title{Sends or resends the invitation to the recipient}
+\title{Send or resend invitation}
 \usage{
 send_invitation(invitation_id)
 }
 \arguments{
-\item{invitation_id}{is the id of an invitation that was previously created in the system.}
+\item{invitation_id}{ID number of the invitation}
 }
 \description{
-Sends or resends the invitation to the recipient
+Sends or resends invitation with a given invitation ID that was previously
+created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
+this function does not also depend on a space ID.
 }

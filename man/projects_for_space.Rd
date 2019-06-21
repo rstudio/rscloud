@@ -2,13 +2,13 @@
 % Please edit documentation in R/spaces.R
 \name{projects_for_space}
 \alias{projects_for_space}
-\title{Returns the projecst for this space}
+\title{Return projects in space}
 \usage{
 projects_for_space(space_id)
 }
 \arguments{
-\item{space_id}{is an id of an existing space that the user has access to.}
+\item{space_id}{ID number of the space}
 }
 \description{
-Returns the projecst for this space
+Returns the projects in a given space.
 }

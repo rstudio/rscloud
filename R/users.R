@@ -1,5 +1,9 @@
-#' Returns the list of members for this space.
-#' @param space_id is the id of the space that the user has access to
+#' Get list of members for space
+#'
+#' Returns the list of members for a given space. You must either be the admin
+#' of the space or your role must have permissions to see the members list.
+#'
+#' @param space_id ID number of the space
 #'
 #' @export
 members_for_space <- function(space_id) {
@@ -45,17 +49,22 @@ members_for_space <- function(space_id) {
     parse_times()
 }
 
-#' Invite a user by email addrss to the space.
+
+#' Invite user to space
 #'
-#' @param user_email email address of the user to add
-#' @param email_invite indicates whether an email should be sent to the user with the invite
-#' @param email_message the message to be sent to the user should the email_invite flag be set to TRUE
-#' @param space_role the desired role for the user in the space
+#' Invites a user to a space with their email address and with a given role,
+#' and can also prompt an invitation email if `email_invite` is set to `TRUE`.
+#'
+#' @param user_email Email address of the user to add
+#' @param space_id ID number of the space
+#' @param email_invite Indicates whether an email should be sent to the user with the invite, `TRUE` by default
+#' @param email_message Message to be sent to the user should the `email_invite` flag be set to `TRUE`
+#' @param space_role Desired role for the user in the space
 #'
 #' @export
 add_user_to_space <- function(user_email, space_id,
-                              email_message = "You are invited to this space",
-                              email_invite = TRUE, space_role = "contributor") {
+                              email_invite = TRUE, email_message = "You are invited to this space",
+                              space_role = "contributor") {
 
   check_auth()
 
@@ -75,10 +84,13 @@ add_user_to_space <- function(user_email, space_id,
                       body = user)
 }
 
-#' Removes the given user_id from the space
+
+#' Remove user from space
 #'
-#' @param user_id the id of the user to be remoed from the space
-#' @param space_id the id for the space to be modified
+#' Removes a user with a given user ID from the space.
+#'
+#' @param user_id ID number of the user
+#' @param space_id ID number of the space
 #'
 #' @export
 remove_user_from_space <- function(user_id, space_id) {

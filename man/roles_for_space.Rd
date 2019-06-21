@@ -2,13 +2,13 @@
 % Please edit documentation in R/spaces.R
 \name{roles_for_space}
 \alias{roles_for_space}
-\title{Returns the valid roles available for this space.}
+\title{Return valid roles for space}
 \usage{
 roles_for_space(space_id)
 }
 \arguments{
-\item{space_id}{is an id of an existing space that the user has access to.}
+\item{space_id}{ID number of the space}
 }
 \description{
-Returns the valid roles available for this space.
+Returns valid roles for a given space and the permissions associated with each role.
 }
