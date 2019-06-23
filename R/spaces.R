@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-get_spaces <- function() {
+space_get <- function() {
   check_auth()
 
   # TODO:: Consider pulling out in rscloud_GET_paged
@@ -50,7 +50,7 @@ get_spaces <- function() {
 #' @param space_id ID number of the space
 #'
 #' @export
-roles_for_space <- function(space_id) {
+space_role <- function(space_id) {
 
   check_auth()
 
@@ -79,7 +79,7 @@ roles_for_space <- function(space_id) {
 #' @param space_id ID number of the space
 #'
 #' @export
-projects_for_space <- function(space_id) {
+space_project_get <- function(space_id) {
 
   check_auth()
 

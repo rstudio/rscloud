@@ -5,7 +5,7 @@
 #' @param space_id ID number of the space
 #'
 #' @export
-invitations_for_space <- function(space_id) {
+invitation_get <- function(space_id) {
 
   check_auth()
 
@@ -59,7 +59,7 @@ invitations_for_space <- function(space_id) {
 #' @param invitation_id ID number of the invitation
 #'
 #' @export
-send_invitation <- function(invitation_id) {
+invitation_send <- function(invitation_id) {
   check_auth()
 
   req <- rscloud_POST(path = c("invitations", invitation_id, "send"),
@@ -80,7 +80,7 @@ send_invitation <- function(invitation_id) {
 #' @param invitation_id ID number of the invitation
 #'
 #' @export
-rescind_invitation <- function(invitation_id) {
+invitation_rescind <- function(invitation_id) {
 
   check_auth()
 

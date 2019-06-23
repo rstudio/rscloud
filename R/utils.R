@@ -29,7 +29,6 @@ rscloud_GET <- function(path, ..., task = NULL, version = "v1") {
   httr::content(req)
 }
 
-# TODO: Test that it works
 rscloud_DELETE <- function(path, ..., task = NULL, version = "v1") {
   url <- httr::modify_url(url = .globals$API_URL, path = c(version, path))
 
@@ -38,7 +37,6 @@ rscloud_DELETE <- function(path, ..., task = NULL, version = "v1") {
   httr::stop_for_status(req, task = task)
 }
 
-# TODO: Test that it works
 rscloud_POST <- function(path, ... , task = NULL, version = "v1") {
   url <- httr::modify_url(url = .globals$API_URL,
                           path = c(version, path))
