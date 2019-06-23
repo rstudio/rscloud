@@ -22,11 +22,11 @@ remotes::install_github("rstudio/rscloud")
 library(rscloud)
 
 initialize_token()
-spaces <- get_spaces()
+spaces <- space_get()
 
 # Assuming you have at least one space, those should return the members and the projects in the space
-members <- members_for_space(spaces$space_id[[1]])
-projects <- projects_for_space(spaces$space_id[[1]])
+members <- user_get(spaces$space_id[[1]])
+projects <- space_project_get(spaces$space_id[[1]])
 
 ```
 
