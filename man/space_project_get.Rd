@@ -4,10 +4,12 @@
 \alias{space_project_get}
 \title{Return projects in space}
 \usage{
-space_project_get(space_id)
+space_project_get(space_id, filters = NULL)
 }
 \arguments{
 \item{space_id}{ID number of the space}
+
+\item{filters}{takes a named list with additional filters to be applied to the query}
 }
 \description{
 Returns the projects in a given space.

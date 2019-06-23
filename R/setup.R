@@ -14,7 +14,7 @@ setup_token <- function() {
   }
 
   ## Check to make sure that the CLIENT_ID and Secrets are defined in the config.yml
-  key <-  config::get("CLIENT_ID")
+  key <- config::get("CLIENT_ID")
 
   if (is.null(key))
     stop("CLIENT_ID is not defined in the config.yml file.  See the README for an example.",

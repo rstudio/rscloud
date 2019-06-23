@@ -13,17 +13,20 @@ check_auth <- function() {
 
 }
 
-rscloud_GET <- function(path, ..., task = NULL, version = "v1") {
+rscloud_GET <- function(path, ..., task = NULL, caller_subject = "space", version = "v1") {
   url <- httr::modify_url(url = .globals$API_URL, path = c(version, path))
 
   req <- httr::GET(url, ..., httr::config(token = .globals$rscloud_token))
 
-  # HW something like this
-  ## TODO: Something about this isn't quite right.  Need to look at it. Commenting for now.
-  # if (httr::http_status(req) == 401) {
-  #   stop("You do not have permission to perform this operation.",
-  #        call. = FALSE)
-  # }
+  if (req$status_code == 404) {
+    stop(paste("Couldn't find the requested", caller_subject),
+         call. = FALSE)
+  }
+
+  if (req$status_code == 403) {
+    stop(paste("You either don't have access, or the",caller_subject,"doesn't exist"),
+         call. = FALSE)
+  }
 
   httr::stop_for_status(req, task = task)
   httr::content(req)
@@ -34,15 +37,22 @@ rscloud_DELETE <- function(path, ..., task = NULL, version = "v1") {
 
   req <- httr::DELETE(url, ... ,  httr::config(token = .globals$rscloud_token))
 
+  #TODO: Check for a variety of fun http status codes and provide a better error message
+
   httr::stop_for_status(req, task = task)
 }
 
-rscloud_POST <- function(path, ... , task = NULL, version = "v1") {
+rscloud_POST <- function(path, ... , task = NULL, caller_subject = "space", version = "v1") {
   url <- httr::modify_url(url = .globals$API_URL,
                           path = c(version, path))
 
   req <- httr::POST(url, ..., encode = "json",
                     httr::config(token = .globals$rscloud_token))
+
+  if (req$status_code == 409) {
+    stop(paste("A duplicate request was previously made for", caller_subject),
+         call. = FALSE)
+  }
 
   httr::stop_for_status(req, task = task)
   req

@@ -99,16 +99,23 @@ space_role <- function(space_id) {
 #' Returns the projects in a given space.
 #'
 #' @param space_id ID number of the space
+#' @param filters takes a named list with additional filters to be applied to the query
 #'
 #' @export
-space_project_get <- function(space_id) {
+space_project_get <- function(space_id,
+                              filters = NULL) {
 
   check_auth()
 
-  #TODO: Provide the ability to provide additional filters
+  query_list = list("filter" = paste0("space_id:", space_id))
+
+
+  if (!is.null(filters)) {
+    query_list = c(query_list, filters)
+  }
 
   json_list <- rscloud_GET("projects",
-                           query = list("filter" = paste0("space_id:", space_id)),
+                           query = query_list,
                            task = paste("Error retrieving projects for space: ",space_id)
                           )
 
@@ -125,8 +132,8 @@ space_project_get <- function(space_id) {
     } else {
       offset <- (i - 1) * batch_size
       pages[[i]] <- rscloud_GET("projects",
-                                query = list("filter" = paste0("space_id:", space_id),
-                                             offset = offset),
+                                query = c(query_list,
+                                          list(offset = offset)),
                                 task = paste("Error retrieving projects for space: ", space_id))$projects
     }
   }
