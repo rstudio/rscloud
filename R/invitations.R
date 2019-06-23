@@ -42,7 +42,8 @@ invitation_get <- function(space_id) {
 
   df <- ff %>%
     tidyr::unnest_longer(invitations) %>%
-    tidyr::unnest_wider(invitations)
+    tidyr::unnest_wider(invitations) %>%
+    parse_times()
 
   df %>% dplyr::rename(invitation_id = id) %>%
     dplyr::select(invitation_id, space_id, email, type,
