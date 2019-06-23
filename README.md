@@ -25,7 +25,7 @@ initialize_token()
 spaces <- space_get()
 
 # Assuming you have at least one space, those should return the members and the projects in the space
-members <- user_get(spaces$space_id[[1]])
+users <- user_get(spaces$space_id[[1]])
 projects <- space_project_get(spaces$space_id[[1]])
 
 ```
