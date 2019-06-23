@@ -62,13 +62,35 @@ space_role <- function(space_id) {
     stop("No roles found for this space", call. = FALSE)
   }
 
-  ## TODO: Do we need to paginate on roles as well?
+  # It seems like roles isn't paginated today.  Adding some code to handle the day when it does become paginated.
+  if (is.null(json_list$total) || is.null(json_list$count)) {
+    n_pages <- 1
+    batch_size <- 1
+  } else {
+    n_pages <- ceiling(json_list$total / json_list$count)
+    batch_size <- json_list$count
+  }
 
-  ff <- tibble::tibble(roles = json_list$roles)
-  df <- ff %>% tidyr::unnest_wider(roles)
+  pages <- vector("list", n_pages)
+
+  for (i in seq_along(pages)) {
+    if (i == 1) {
+      pages[[1]] <- json_list$roles
+    } else {
+      offset <- (i - 1) * batch_size
+      pages[[i]] <- rscloud_GET(path = c("spaces", space_id, "roles") ,
+                                query = list(offset = offset),
+                                task = paste("Error retrieving roles for space: ", space_id))$roles
+    }
+  }
+
+  # Rectangling
+  df <- tibble::tibble(roles = pages)
   df %>%
-    dplyr::select(space_id, role_id = id, role, dplyr::everything()) %>%
-    parse_times()
+    tidyr::unnest_longer(roles) %>%
+    tidyr::unnest_wider(roles) %>%
+    parse_times() %>%
+    dplyr::select(space_id, role_id = id, role, dplyr::everything())
 }
 
 
