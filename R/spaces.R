@@ -99,7 +99,7 @@ space_role <- function(space_id) {
 #' Returns the projects in a given space.
 #'
 #' @param space_id ID number of the space
-#' @param filters takes a named list with additional filters to be applied to the query
+#' @param filters is a string that will be concatenated onto the filter call see the [lucid docs](https://buildmaster.rstudioservices.com/job/hostedapps/job/lucid-pipeline/job/master/API/api.html#header-how-to-filter)
 #'
 #' @export
 space_project_get <- function(space_id,
@@ -107,11 +107,12 @@ space_project_get <- function(space_id,
 
   check_auth()
 
-  query_list = list("filter" = paste0("space_id:", space_id))
+  query_list <-  list("filter" = paste0("space_id:", space_id))
 
-
+  # https://buildmaster.rstudioservices.com/job/hostedapps/job/lucid-pipeline/job/master/API/api.html
+  # https://buildmaster.rstudioservices.com/job/hostedapps/job/lucid-pipeline/job/master/API/api.html#projects-project-collection-get
   if (!is.null(filters)) {
-    query_list = c(query_list, filters)
+    query_list = list("filter" = paste0(filters, "^","space_id:", space_id ))
   }
 
   json_list <- rscloud_GET("projects",

@@ -9,7 +9,7 @@ space_project_get(space_id, filters = NULL)
 \arguments{
 \item{space_id}{ID number of the space}
 
-\item{filters}{takes a named list with additional filters to be applied to the query}
+\item{filters}{is a string that will be concatenated onto the filter call see the [lucid docs](https://buildmaster.rstudioservices.com/job/hostedapps/job/lucid-pipeline/job/master/API/api.html#header-how-to-filter)}
 }
 \description{
 Returns the projects in a given space.
