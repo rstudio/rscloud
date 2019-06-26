@@ -85,7 +85,15 @@ invitation_rescind <- function(invitation_id) {
 
   check_auth()
 
-  req <- rscloud_DELETE(path = c("invitations", invitation_id),
-                        task = paste0("Failed to remove invitation_id: ", invitation_id))
+  req <- rscloud_DELETE(path = c("invitations", invitation_id))
+
+  if (succeeded(req)) {
+    usethis::ui_done("Invitation {usethis::ui_value(invitation_id)} rescinded.")
+  }
+
+  if (failed(req)) {
+    usethis::ui_oops("Failed to rescind invitation {usethis::ui_value(invitation_id)}.")
+  }
+
 }
 

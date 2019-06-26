@@ -98,6 +98,14 @@ space_remove_user <- function(space_id, user_id) {
 
   check_auth()
 
-  rscloud_DELETE(path = c("spaces", space_id, "members", user_id),
-                 task = paste0("Failed to remove user_id: ", user_id))
+  req <- rscloud_DELETE(path = c("spaces", space_id, "members", user_id))
+
+  if (succeeded(req)) {
+    usethis::ui_done("Removed user {usethis::ui_value(user_id)} from space {usethis::ui_value(space_id)}.")
+  }
+
+  if (failed(req)) {
+    usethis::ui_oops("Failed to remove user {usethis::ui_value(user_id)} from space {usethis::ui_value(space_id)}.")
+  }
+
 }
