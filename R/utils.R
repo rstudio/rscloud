@@ -66,12 +66,12 @@ parse_times <- function(df) {
   )
 }
 
-#' Convenience functions for ui_* messages
-succeeded = function(x) {
-  !http_error(x$result)
+# Convenience functions for ui_* messages
+succeeded <- function(x) {
+  !httr::http_error(x$result)
 }
 
-failed = function(x) {
-  http_error(x$result)
+failed <- function(x) {
+  httr::http_error(x$result)
 }
 
