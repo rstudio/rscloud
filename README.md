@@ -28,5 +28,11 @@ spaces <- space_get()
 users <- user_get(spaces$space_id[[1]])
 projects <- space_project_get(spaces$space_id[[1]])
 
+# You can retrieve only public projects by passing in filters that limit visibility
+projects <- space_project_get(spaces$space_id[[1]], filters = c("visibility:public"))
+
+# To filter for projects that were updated since August 25, 2019 AND ones that are public by combining them in the filters
+projects <- space_project_get(spaces$space_id[[1]], filters = c("updated_time:gt:2017-08-25T00:00:00", "visibility:public"))
+
 ```
 

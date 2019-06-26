@@ -69,4 +69,5 @@ initialize_token <- function() {
 ## Some useful references if you are new to creating packages or using httr
 ## https://cran.r-project.org/web/packages/httr/vignettes/quickstart.html
 ## Best practices for API design: https://httr.r-lib.org/articles/api-packages.html
-##
+## To get the more verbose version of the request, just as the user to run with_verbose() around the call they are making
+
