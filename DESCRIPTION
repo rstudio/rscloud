@@ -19,7 +19,9 @@ Imports:
     tidyr,
     httpuv,
     vctrs,
-    rlang
+    rlang,
+    purrr,
+    usethis
 Remotes: 
     tidyverse/tidyr,
     r-lib/vctrs,
