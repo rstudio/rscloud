@@ -32,14 +32,13 @@ rscloud_GET <- function(path, ..., task = NULL, caller_subject = "space", versio
   httr::content(req)
 }
 
-rscloud_DELETE <- function(path, ..., task = NULL, version = "v1") {
+rscloud_DELETE <- function(path, ..., version = "v1") {
   url <- httr::modify_url(url = .globals$API_URL, path = c(version, path))
 
-  req <- httr::DELETE(url, ... ,  httr::config(token = .globals$rscloud_token))
+  purrr::safely(httr::DELETE)(url, ... , httr::config(token = .globals$rscloud_token))
 
   #TODO: Check for a variety of fun http status codes and provide a better error message
 
-  httr::stop_for_status(req, task = task)
 }
 
 rscloud_POST <- function(path, ... , task = NULL, caller_subject = "space", version = "v1") {
@@ -66,3 +65,13 @@ parse_times <- function(df) {
     updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S"))
   )
 }
+
+# Convenience functions for ui_* messages
+succeeded <- function(x) {
+  !httr::http_error(x$result)
+}
+
+failed <- function(x) {
+  httr::http_error(x$result)
+}
+
