@@ -139,7 +139,7 @@ space_project_get <- function(space_id,
   percent_growth <- floor(100/n_pages)
 
   for (i in seq_along(pages)) {
-    pb$tick(percent_growth, tokens = list(what = paste("Batch", i, "of", n_pages)))
+    pb$tick(percent_growth, tokens = list(what = paste("batch", i, "of", n_pages)))
     if (i == 1) {
       pages[[1]] <- json_list$projects
     } else {
