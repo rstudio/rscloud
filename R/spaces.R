@@ -102,7 +102,7 @@ space_role <- function(space_id) {
 #' @param filters is a vector of filters to be AND'ed and applied to the request
 #'
 #' @export
-project_get <- function(space_id,
+space_project_get <- function(space_id,
                         filters = NULL) {
 
   check_auth()

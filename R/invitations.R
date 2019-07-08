@@ -5,7 +5,7 @@
 #' @param space_id ID number of the space
 #'
 #' @export
-invitation_get <- function(space_id) {
+space_invitation_get <- function(space_id) {
 
   check_auth()
 

@@ -6,7 +6,7 @@
 #' @param space_id ID number of the space
 #'
 #' @export
-user_get <- function(space_id) {
+space_member_get <- function(space_id) {
 
   check_auth()
 
@@ -50,7 +50,7 @@ user_get <- function(space_id) {
 }
 
 
-#' Invite user to space
+#' Invite a user to become a member of a space
 #'
 #' Invites a user to a space with their email address and with a given role,
 #' and can also prompt an invitation email if `email_invite` is set to `TRUE`.
@@ -63,7 +63,7 @@ user_get <- function(space_id) {
 #' @param space_role Desired role for the user in the space
 #'
 #' @export
-user_add <- function( space_id, user_email,
+space_member_add <- function( space_id, user_email,
                       email_invite = TRUE, email_message = "You are invited to this space",
                       space_role = "contributor") {
 
@@ -86,15 +86,15 @@ user_add <- function( space_id, user_email,
 }
 
 
-#' Remove user from space
+#' Remove member from space
 #'
-#' Removes a user with a given user ID from the space.
+#' Removes a member with a given user ID from the space.
 #'
 #' @param space_id ID number of the space
 #' @param user_id ID number of the user
 #'
 #' @export
-space_remove_user <- function(space_id, user_id) {
+space_member_remove <- function(space_id, user_id) {
 
   check_auth()
 

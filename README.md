@@ -25,14 +25,14 @@ initialize_token()
 spaces <- space_get()
 
 # Assuming you have at least one space, those should return the members and the projects in the space
-users <- user_get(spaces$space_id[[1]])
-projects <- project_get(spaces$space_id[[1]])
+users <- space_user_get(spaces$space_id[[1]])
+projects <- space_project_get(spaces$space_id[[1]])
 
 # You can retrieve only public projects by passing in filters that limit visibility
-projects <- project_get(spaces$space_id[[1]], filters = c("visibility:public"))
+projects <- space_project_get(spaces$space_id[[1]], filters = c("visibility:public"))
 
 # To filter for projects that were updated since August 25, 2019 AND ones that are public by combining them in the filters
-projects <- project_get(spaces$space_id[[1]], filters = c("updated_time:gt:2017-08-25T00:00:00", "visibility:public"))
+projects <- space_project_get(spaces$space_id[[1]], filters = c("updated_time:gt:2017-08-25T00:00:00", "visibility:public"))
 
 ```
 
