@@ -116,13 +116,7 @@ space_project_get <- function(space_id,
     query_list <- additional_filters
   }
 
-  pb <- progress::progress_bar$new(
-    format = " (:spin) downloading :what :percent",
-    total = 100, clear = FALSE, width = 60, show_after = 0
-  )
-
-  pb$tick(0)
-  json_list <- rscloud_GET("projects",
+    json_list <- rscloud_GET("projects",
                            query = query_list,
                            task = paste("Error retrieving projects for space: ",space_id)
                           )
@@ -136,10 +130,16 @@ space_project_get <- function(space_id,
   n_pages <- ceiling(json_list$total / json_list$count)
   batch_size <- json_list$count
   pages <- vector("list", n_pages)
-  percent_growth <- floor(100/n_pages)
+
+  pb <- progress::progress_bar$new(
+    format = " (:spin) downloading :what :percent",
+    total = n_pages, clear = FALSE, width = 60, show_after = 0
+  )
+
+  pb$tick(0)
 
   for (i in seq_along(pages)) {
-    pb$tick(percent_growth, tokens = list(what = paste("batch", i, "of", n_pages)))
+    pb$tick(tokens = list(what = paste(batch_size, "projects. Batch", i, "of", n_pages)))
     if (i == 1) {
       pages[[1]] <- json_list$projects
     } else {
