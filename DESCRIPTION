@@ -21,7 +21,8 @@ Imports:
     vctrs,
     rlang,
     purrr,
-    usethis
+    usethis,
+    progress
 Remotes: 
     tidyverse/tidyr,
     r-lib/vctrs,
