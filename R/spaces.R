@@ -122,24 +122,24 @@ space_project_get <- function(space_id,
                           )
 
   if (length(json_list$projects) == 0) {
-    pb$tick(100, tokens = list(what = 'Complete'))
     stop("No projects found for this space", call. = FALSE)
   }
 
 
   n_pages <- ceiling(json_list$total / json_list$count)
   batch_size <- json_list$count
+  total_projects <- json_list$total
   pages <- vector("list", n_pages)
 
   pb <- progress::progress_bar$new(
-    format = " (:spin) downloading :what :percent",
+    format = " [:bar] :percent",
     total = n_pages, clear = FALSE, width = 60, show_after = 0
   )
 
   pb$tick(0)
 
   for (i in seq_along(pages)) {
-    pb$tick(tokens = list(what = paste(batch_size, "projects. Batch", i, "of", n_pages)))
+    pb$tick()
     if (i == 1) {
       pages[[1]] <- json_list$projects
     } else {
