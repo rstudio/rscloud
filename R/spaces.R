@@ -102,8 +102,8 @@ space_role <- function(space_id) {
 #' @param filters is a vector of filters to be AND'ed and applied to the request
 #'
 #' @export
-space_project_get <- function(space_id,
-                              filters = NULL) {
+project_get <- function(space_id,
+                        filters = NULL) {
 
   check_auth()
 
@@ -116,7 +116,7 @@ space_project_get <- function(space_id,
     query_list <- additional_filters
   }
 
-    json_list <- rscloud_GET("projects",
+  json_list <- rscloud_GET("projects",
                            query = query_list,
                            task = paste("Error retrieving projects for space: ",space_id)
                           )
@@ -132,14 +132,14 @@ space_project_get <- function(space_id,
   pages <- vector("list", n_pages)
 
   pb <- progress::progress_bar$new(
-    format = " [:bar] :percent",
+    format = " Downloading :what projects [:bar] :percent",
     total = n_pages, clear = FALSE, width = 60, show_after = 0
   )
 
-  pb$tick(0)
+  pb$tick(0, tokens = list(what = total_projects))
 
   for (i in seq_along(pages)) {
-    pb$tick()
+    pb$tick(tokens = list(what = total_projects))
     if (i == 1) {
       pages[[1]] <- json_list$projects
     } else {
