@@ -118,9 +118,10 @@ space_project_get <- function(space_id,
 
   pb <- progress::progress_bar$new(
     format = " (:spin) downloading :what :percent",
-    total = 100, clear = FALSE, width = 60
+    total = 100, clear = FALSE, width = 60, show_after = 0
   )
 
+  pb$tick(0)
   json_list <- rscloud_GET("projects",
                            query = query_list,
                            task = paste("Error retrieving projects for space: ",space_id)
