@@ -16,7 +16,7 @@ Imports:
     tibble,
     dplyr,
     magrittr,
-    tidyr,
+    tidyr (>= 0.8.99),
     httpuv,
     vctrs,
     rlang,
