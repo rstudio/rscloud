@@ -16,7 +16,7 @@ Imports:
     tibble,
     dplyr,
     magrittr,
-    tidyr,
+    tidyr (>= 1.0.0),
     httpuv,
     vctrs,
     rlang,
@@ -24,7 +24,6 @@ Imports:
     usethis,
     progress
 Remotes: 
-    tidyverse/tidyr,
     r-lib/vctrs,
     r-lib/rlang
 RoxygenNote: 6.1.1
