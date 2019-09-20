@@ -1,0 +1,3 @@
+RStudio Cloud Space (ID: 31750)
+<test-space-1>
+  users: 3 | projects: 0

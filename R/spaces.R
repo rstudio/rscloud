@@ -1,163 +1,104 @@
-#' Return spaces that user has access to
+#' List Spaces
 #'
 #' This will typically be the first call that a user makes to help determine
-#' which spaces they have access to and to retrieve the space IDs that are
-#' needed in many of the later calls for managing space memberships and
-#' invitations.
+#'   which spaces they have access to and to retrieve the space IDs that are
+#'   needed in many of the later calls for managing space memberships and
+#'   invitations.
 #'
+#' @param filters A vector of filters to be AND'ed and applied to the request.
+#' @return A data frame of space attributes.
 #' @export
-#'
-space_get <- function() {
-  check_auth()
+rscloud_space_list <- function(filters = NULL) {
 
-  # TODO:: Consider pulling out in rscloud_GET_paged
-  # contents = "spaces"
-  # json_list[[contents]] so you don't have to do metaprogramming
-  json_list <- rscloud_GET("spaces", task = "Error retrieving spaces")
+  query_list <- filters %>%
+    purrr::map(~list("filter" = .x)) %>%
+    purrr::flatten()
 
-  if (length(json_list$spaces) == 0)
-    stop("No spaces available for this user.", call. = FALSE)
+  response <- rscloud_rest("spaces", query = query_list)
 
-  n_pages <- ceiling(json_list$total / json_list$count)
-  batch_size <- json_list$count
-  pages <- vector("list", n_pages)
+  verify_response_length(response, "spaces", filters)
 
-  for (i in seq_along(pages)) {
-    if (i == 1) {
-      pages[[1]] <- json_list$spaces
-    } else {
-      offset <- (i - 1) * batch_size
-      pages[[i]] <- rscloud_GET("spaces", query = list(offset = offset))$spaces
-    }
-  }
+  spaces <- collect_paginated(response, path = "spaces", collection = "spaces",
+                              query = query_list)
 
-  # Rectangling
-  ff <- tibble::tibble(spaces = pages)
-  df <- ff %>%
-    tidyr::unnest_longer(spaces) %>%
-    tidyr::unnest_wider(spaces)
-
-  df %>%
-    dplyr::select(space_id = id, name, description, dplyr::everything()) %>%
+  spaces %>%
+    tidy_list() %>%
+    dplyr::select(space_id = .data$id, .data$name, .data$description, dplyr::everything()) %>%
     parse_times()
 }
 
+#' Get Space Information
+#'
+#' Obtain information on a space.
+#'
+#' @param space A space object created using `rscloud_space()`.
+#' @export
+space_info <- function(space) {
+  rscloud_space_info(space_id(space))
+}
 
-#' Return valid roles for space
+rscloud_space_info <- function(space_id) {
+  response <- rscloud_rest(c("spaces", space_id))
+  parse_space_response(response)
+}
+
+parse_space_response <- function(response) {
+  response %>%
+    list() %>%
+    tidy_list() %>%
+    dplyr::rename(space_id = .data$id)
+}
+
+#' Construct a Space Object
+#'
+#' Returns a space object given the space ID or the space name.
+#'
+#' @param space_id The space ID.
+#' @param name The space name.
+#'
+#' @details Exactly one of `space_id` or `name` must be specified.
+#'
+#' @return An `rscloud_space` object.
+#' @export
+rscloud_space <- function(space_id = NULL, name = NULL) {
+
+  if (!is.null(space_id) && !is.null(name)) stop(
+    "One of `space_id` or `name` must be specified.",
+    call. = FALSE
+  )
+
+  if (is.null(space_id) && is.null(name)) stop(
+    "At least one of `space_id` or `name` must be specified.",
+    call. = FALSE
+  )
+
+  if (!is.null(space_id)) {
+    rscloud_space_info(space_id) %>%
+      RSCloudSpace$new()
+  } else {
+    df <- rscloud_space_list(filters = glue::glue("name:{name}"))
+    if (nrow(df) > 1) stop(
+      glue::glue("Multiple spaces with name '{name}' found.", call. = FALSE)
+    )
+
+    RSCloudSpace$new(df)
+  }
+}
+
+#' Valid Roles for Space
 #'
 #' Returns valid roles for a given space and the permissions associated with each role.
 #'
-#' @param space_id ID number of the space
+#' @inheritParams space_info
 #'
 #' @export
-space_role <- function(space_id) {
+space_role_list <- function(space) {
+  response <- rscloud_rest(path = c("spaces", space_id(space), "roles"))
 
-  check_auth()
-
-  json_list <- rscloud_GET(path = c("spaces", space_id, "roles"))
-
-  if (length(json_list$roles) == 0) {
-    # HW: would be better to return 0-row tibble with correct columns
-    # But there's no way to get that from the json when the result is empty
-    stop("No roles found for this space", call. = FALSE)
-  }
-
-  # It seems like roles isn't paginated today.  Adding some code to handle the day when it does become paginated.
-  if (is.null(json_list$total) || is.null(json_list$count)) {
-    n_pages <- 1
-    batch_size <- 1
-  } else {
-    n_pages <- ceiling(json_list$total / json_list$count)
-    batch_size <- json_list$count
-  }
-
-  pages <- vector("list", n_pages)
-
-  for (i in seq_along(pages)) {
-    if (i == 1) {
-      pages[[1]] <- json_list$roles
-    } else {
-      offset <- (i - 1) * batch_size
-      pages[[i]] <- rscloud_GET(path = c("spaces", space_id, "roles") ,
-                                query = list(offset = offset),
-                                task = paste("Error retrieving roles for space: ", space_id))$roles
-    }
-  }
-
-  # Rectangling
-  df <- tibble::tibble(roles = pages)
-  df %>%
-    tidyr::unnest_longer(roles) %>%
-    tidyr::unnest_wider(roles) %>%
-    parse_times() %>%
-    dplyr::select(space_id, role_id = id, role, dplyr::everything())
+  response %>%
+    purrr::flatten() %>%
+    purrr::transpose() %>%
+    purrr::map(purrr::simplify) %>%
+    tibble::as_tibble() %>%
+    parse_times()
 }
-
-
-#' Return projects in space
-#'
-#' Returns the projects in a given space.
-#'
-#' @param space_id ID number of the space
-#' @param filters is a vector of filters to be AND'ed and applied to the request
-#'
-#' @export
-space_project_get <- function(space_id,
-                        filters = NULL) {
-
-  check_auth()
-
-  query_list <-  list("filter" = paste0("space_id:", space_id))
-
-  # Talk to the hosted team if you want a link to our API reference
-  if (!is.null(filters)) {
-    additional_filters <- purrr::map(filters, function(x) { list("filter" = x)}) %>%
-      append(query_list) %>% purrr::flatten()
-    query_list <- additional_filters
-  }
-
-  json_list <- rscloud_GET("projects",
-                           query = query_list,
-                           task = paste("Error retrieving projects for space: ",space_id)
-                          )
-
-  if (length(json_list$projects) == 0) {
-    stop("No projects found for this space", call. = FALSE)
-  }
-
-
-  n_pages <- ceiling(json_list$total / json_list$count)
-  batch_size <- json_list$count
-  total_projects <- json_list$total
-  pages <- vector("list", n_pages)
-
-  pb <- progress::progress_bar$new(
-    format = " Downloading :what projects [:bar] :percent",
-    total = n_pages, clear = FALSE, width = 60, show_after = 0
-  )
-
-  pb$tick(0, tokens = list(what = total_projects))
-
-  for (i in seq_along(pages)) {
-    pb$tick(tokens = list(what = total_projects))
-    if (i == 1) {
-      pages[[1]] <- json_list$projects
-    } else {
-      offset <- (i - 1) * batch_size
-      pages[[i]] <- rscloud_GET("projects",
-                                query = c(query_list,
-                                          list(offset = offset)),
-                                task = paste("Error retrieving projects for space: ", space_id))$projects
-    }
-  }
-
-  # Rectangling
-  df <- tibble::tibble(projects = pages)
-  df %>%
-    tidyr::unnest_longer(projects) %>%
-    tidyr::unnest_wider(projects) %>%
-    tidyr::hoist(author, display_name = "display_name") %>%
-    parse_times() %>%
-    dplyr::select(id, name, status, updated_time, display_name, author_id, visibility, created_time)
-}
-

@@ -2,15 +2,27 @@
 % Please edit documentation in R/users.R
 \name{space_member_remove}
 \alias{space_member_remove}
-\title{Remove member from space}
+\alias{space_member_remove.numeric}
+\alias{space_member_remove.character}
+\alias{space_member_remove.data.frame}
+\title{Remove Members}
 \usage{
-space_member_remove(space_id, user_id)
+space_member_remove(space, users, warn = TRUE)
+
+\method{space_member_remove}{numeric}(space, users, warn = TRUE)
+
+\method{space_member_remove}{character}(space, users, warn = TRUE)
+
+\method{space_member_remove}{data.frame}(space, users, warn = TRUE)
 }
 \arguments{
-\item{space_id}{ID number of the space}
+\item{space}{A space object created using `rscloud_space()`.}
 
-\item{user_id}{ID number of the user}
+\item{users}{ID number or email of the user to be removed, or a data frame
+with either a `user_id` or `email` column.}
+
+\item{warn}{Whether to ask user for confirmation of deletion.}
 }
 \description{
-Removes a member with a given user ID from the space.
+Removes members.
 }

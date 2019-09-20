@@ -2,16 +2,23 @@
 % Please edit documentation in R/users.R
 \name{space_member_add}
 \alias{space_member_add}
-\title{Invite a user to become a member of a space}
+\alias{space_member_add.character}
+\alias{space_member_add.data.frame}
+\title{Invite Users}
 \usage{
-space_member_add(space_id, user_email, email_invite = TRUE,
-  email_message = "You are invited to this space",
-  space_role = "contributor")
+space_member_add(space, users, ...)
+
+\method{space_member_add}{character}(space, users, email_invite = TRUE,
+  email_message = NULL, space_role = "contributor", ...)
+
+\method{space_member_add}{data.frame}(space, users, ...)
 }
 \arguments{
-\item{space_id}{ID number of the space}
+\item{space}{A space object created using `rscloud_space()`.}
 
-\item{user_email}{Email address of the user to add}
+\item{users}{Email address of the user to add or a data frame of user information.}
+
+\item{...}{Additional arguments.}
 
 \item{email_invite}{Indicates whether an email should be sent to the user with the invite, `TRUE` by default}
 
@@ -20,6 +27,11 @@ space_member_add(space_id, user_email, email_invite = TRUE,
 \item{space_role}{Desired role for the user in the space}
 }
 \description{
-Invites a user to a space with their email address and with a given role,
-and can also prompt an invitation email if `email_invite` is set to `TRUE`.
+Invites users to a space.
+}
+\details{
+The `users` input should be a data frame consisting of the columns "user_email",
+  "email_invite", "email_message", and "space_role". Each row of the `users` data frame
+   denotes one user to be added. If any of these properties are specified in `...`, they
+   will take precendence and a message printed.
 }

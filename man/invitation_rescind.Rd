@@ -2,15 +2,20 @@
 % Please edit documentation in R/invitations.R
 \name{invitation_rescind}
 \alias{invitation_rescind}
-\title{Cancel existing invitation}
+\alias{invitation_rescind.numeric}
+\alias{invitation_rescind.tbl_invitation}
+\title{Cancel Invitations}
 \usage{
-invitation_rescind(invitation_id)
+invitation_rescind(invitations)
+
+\method{invitation_rescind}{numeric}(invitations)
+
+\method{invitation_rescind}{tbl_invitation}(invitations)
 }
 \arguments{
-\item{invitation_id}{ID number of the invitation}
+\item{invitations}{An invitation ID number or a data frame
+of invitations returned by `space_invitation_list()`.}
 }
 \description{
-Cancels an existing invitation with a given invitation ID that was previously
-created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
-this function does not also depend on a space ID.
+Cancels existing invitations.
 }
