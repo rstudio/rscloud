@@ -1,7 +1,7 @@
 test_that("whoami works", {
   expect_output(
     rscloud_whoami(),
-    "foo bar <46ghqq7u@emaildrop.io>"
+    "rscloud0 kevin <kevin\\.kuo\\+rscloud@rstudio\\.com>"
   )
 })
 
