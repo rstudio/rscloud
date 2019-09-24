@@ -18,6 +18,7 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
     path = c(version, path)
   )
 
+  ua <- httr::user_agent("https://github.com/rstudio/rscloud")
   auth_header <- httr::add_headers(
     Authorization = glue::glue("Bearer {get_rscloud_token()}")
   )
@@ -26,19 +27,19 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
     verb,
     GET = function() {
       httr::GET(api_url, query = query,
-                auth_header)
+                auth_header, ua)
     },
     POST = function() {
       httr::POST(api_url,
                  body = data,
                  encode = "json",
-                 auth_header
+                 auth_header, ua
       )
     },
     DELETE = function() {
       httr::DELETE(
         api_url,
-        auth_header
+        auth_header, ua
       )
     },
     PATCH = function() {
@@ -46,7 +47,7 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
         api_url,
         body = data,
         encode = "json",
-        auth_header
+        auth_header, ua
       )
     },
     stop("Verb `", verb, "`` is unsupported.", call. = FALSE)
