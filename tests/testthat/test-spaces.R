@@ -38,10 +38,4 @@ test_that("space_role_list() works", {
   )
 })
 
-test_that("no projects error", {
-  space <- rscloud_space(name = "test-space-1")
-  expect_error(
-    space %>% space_project_list(),
-    "No projects found\\."
-  )
-})
+
