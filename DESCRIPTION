@@ -1,6 +1,6 @@
 Package: rscloud
 Title: Provides an R client to the rstudio.cloud REST APIs
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "Tareef",
            family = "Kawaf",
