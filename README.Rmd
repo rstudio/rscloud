@@ -1,0 +1,115 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rscloud
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+API wrappers for the rstudio.cloud service.  The initial release includes APIs for managing space memberships, and listing projects within a space. 
+
+## Getting started
+
+To get started, you'll need to obtain credentials from the RStudio Cloud team and set the environment variables `RSCLOUD_CLIENT_ID` and `RSCLOUD_CLIENT_SECRET`. The recommended way to set these is by editing your `.Renviron` file. This can be easily done by calling the `usethis::edit_r_environ()` function. Your `.Renviron` file may look something like the following:
+
+```
+RSCLOUD_CLIENT_ID=xxxxxxx
+RSCLOUD_CLIENT_SECRET=zzzzzzz
+```
+
+You can install the development version of rscloud as follows:
+
+```{r, eval = FALSE}
+install.packages("remotes")
+remotes::install_github("rstudio/rscloud")
+```
+
+The entry point to most of the functionality is a *space*. To see the list of spaces you have access to, you can use the `rscloud_space_list()` function:
+
+```{r, include  = FALSE, eval = TRUE}
+library(rscloud)
+# clean up
+space <- rscloud_space(31783)
+
+members <- space %>% 
+  space_member_list() %>% 
+  dplyr::filter(email != "kevin.kuo+rscloud@rstudio.com")
+space %>% 
+  purrr::safely(space_member_remove)(members, ask = FALSE)
+
+space %>% 
+  purrr::possibly(space_invitation_list, otherwise =NULL)() %>% 
+  purrr::safely(invitation_rescind)()
+```
+
+
+```{r}
+library(rscloud)
+rscloud_space_list()
+```
+
+To create a space object, use the `rscloud_space()` function:
+
+```{r}
+space <- rscloud_space(31783)
+# you can also use the space name
+# space <- rstudio_space(name = "test-space-1")
+space
+```
+
+Adding members to a space can be done via `space_member_add()`:
+
+```{r}
+space %>% 
+  space_member_add("kevin.kuo+test1@rstudio.com")
+
+space
+```
+
+You can get a tidy data frame of space members with `space_member_list()`:
+
+```{r}
+space %>% 
+  space_member_list()
+```
+
+You can also provide a data frame of user information, which can be useful when working with spreadsheets of class rosters:
+
+```{r}
+emails <- c("kevin.kuo+test2@rstudio.com", "kevin.kuo+test3@rstudio.com")
+df <- tibble::tibble(user_email = emails)
+
+space %>% 
+  space_member_add(df)
+
+space
+```
+
+You can also work with outstanding invitations:
+
+```{r}
+invitations <- space %>% 
+  space_invitation_list()
+
+invitations
+```
+
+To resend invitations, use the `invitation_send()` function:
+
+```{r, eval = FALSE}
+invitations %>% 
+  # filter(...) %>% 
+  invitation_send()
+```
