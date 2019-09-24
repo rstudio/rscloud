@@ -21,7 +21,8 @@ Imports:
     progress,
     glue,
     jsonlite,
-    rlang
+    rlang,
+    R6
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
