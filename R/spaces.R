@@ -10,6 +10,7 @@
 #' @export
 rscloud_space_list <- function(filters = NULL) {
 
+  filters <- c(filters, "visibility:private")
   query_list <- filters %>%
     purrr::map(~list("filter" = .x)) %>%
     purrr::flatten()
