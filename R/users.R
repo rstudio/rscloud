@@ -147,22 +147,22 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @inheritParams space_info
 #' @param users ID number or email of the user to be removed, or a data frame
 #'   with either a `user_id` or `email` column.
-#' @param warn Whether to ask user for confirmation of deletion.
+#' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space, users, warn = TRUE) {
+space_member_remove <- function(space, users, ask = TRUE) {
   UseMethod("space_member_remove", users)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.numeric <- function(space, users, warn = TRUE) {
+space_member_remove.numeric <- function(space, users, ask = TRUE) {
   if (!rlang::is_scalar_integerish(users)) stop(
     "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
     call. = FALSE
   )
 
-  if (warn) {
+  if (ask) {
     really_remove <- are_you_sure(glue::glue(
       "remove member `{users}`"
     ))
@@ -178,7 +178,7 @@ space_member_remove.numeric <- function(space, users, warn = TRUE) {
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.character <- function(space, users, warn = TRUE) {
+space_member_remove.character <- function(space, users, ask = TRUE) {
 
   if (!is_valid_email(users)) stop(
     "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
@@ -189,7 +189,7 @@ space_member_remove.character <- function(space, users, warn = TRUE) {
     space_member_list(filters = glue::glue("email:{tolower(users)}")) %>%
     dplyr::pull(.data$user_id)
 
-  if (warn) {
+  if (ask) {
     really_remove <- are_you_sure(glue::glue(
       "remove member <{tolower(users)}>"
     ))
@@ -202,7 +202,7 @@ space_member_remove.character <- function(space, users, warn = TRUE) {
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.data.frame <- function(space, users, warn = TRUE) {
+space_member_remove.data.frame <- function(space, users, ask = TRUE) {
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
     message("Using `user_id` column.")
@@ -215,13 +215,13 @@ space_member_remove.data.frame <- function(space, users, warn = TRUE) {
          call. = FALSE)
   }
 
-  if (warn) {
+  if (ask) {
     really_remove <- are_you_sure(glue::glue(
       "remove {length(users)} members"
     ))
     if (!really_remove) return(invisible(space))
   }
 
-  purrr::walk(users, ~ space_member_remove(space, .x, warn = FALSE))
+  purrr::walk(users, ~ space_member_remove(space, .x, ask = FALSE))
   invisible(space)
 }

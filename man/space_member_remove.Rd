@@ -7,13 +7,13 @@
 \alias{space_member_remove.data.frame}
 \title{Remove Members}
 \usage{
-space_member_remove(space, users, warn = TRUE)
+space_member_remove(space, users, ask = TRUE)
 
-\method{space_member_remove}{numeric}(space, users, warn = TRUE)
+\method{space_member_remove}{numeric}(space, users, ask = TRUE)
 
-\method{space_member_remove}{character}(space, users, warn = TRUE)
+\method{space_member_remove}{character}(space, users, ask = TRUE)
 
-\method{space_member_remove}{data.frame}(space, users, warn = TRUE)
+\method{space_member_remove}{data.frame}(space, users, ask = TRUE)
 }
 \arguments{
 \item{space}{A space object created using `rscloud_space()`.}
@@ -21,7 +21,7 @@ space_member_remove(space, users, warn = TRUE)
 \item{users}{ID number or email of the user to be removed, or a data frame
 with either a `user_id` or `email` column.}
 
-\item{warn}{Whether to ask user for confirmation of deletion.}
+\item{ask}{Whether to ask user for confirmation of deletion.}
 }
 \description{
 Removes members.
