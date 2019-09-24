@@ -21,7 +21,7 @@ RSCloudSpace <- R6::R6Class("RSCloudSpace",
     }
   ),
   active = list(
-    id = function() {
+    space_id = function() {
       private$data$space_id
     }
   ),
@@ -50,4 +50,4 @@ RSCloudSpace <- R6::R6Class("RSCloudSpace",
 #'
 #' @inheritParams space_info
 #' @export
-space_id <- function(space) space$id
+space_id <- function(space) space$space_id
