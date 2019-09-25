@@ -89,14 +89,3 @@ parse_times <- function(df) {
     updated_time = as.POSIXct(strptime(.data$updated_time, "%Y-%m-%dT%H:%M:%S"))
   )
 }
-
-# Convenience functions for ui_* messages
-succeeded <- function(x) {
-  !httr::http_error(x$result)
-}
-
-failed <- function(x) {
-  httr::http_error(x$result)
-}
-
-
