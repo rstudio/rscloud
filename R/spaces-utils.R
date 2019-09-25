@@ -1,17 +1,17 @@
 RSCloudSpace <- R6::R6Class("RSCloudSpace",
   public = list(
     initialize = function(data) {
-      private$data <- data
+      private$id <- data$space_id
     },
     print = function(...) {
       # if last known active, poll
-      if (identical(private$status, "ACTIVE")) private$update()
+      info <- if (identical(private$status, "ACTIVE")) private$get_info()
 
       msg <- if (identical(private$status, "ACTIVE")) {
         glue::glue(
-        "RStudio Cloud Space (ID: {private$data$space_id})
-        <{private$data$name}>
-          users: {private$data$user_count} | projects: {private$data$project_count}
+        "RStudio Cloud Space (ID: {private$id})
+        <{info$name}>
+          users: {info$user_count} | projects: {info$project_count}
         "
         )
       } else {
@@ -22,24 +22,25 @@ RSCloudSpace <- R6::R6Class("RSCloudSpace",
   ),
   active = list(
     space_id = function() {
-      private$data$space_id
+      private$id
     }
   ),
   private = list(
-    data = NULL,
+    id = NULL,
     status = "ACTIVE",
-    update = function() {
-      res <- purrr::safely(rscloud_space_info)(private$data$space_id)
-      private$data <- res$result
+    get_info = function() {
+      res <- purrr::safely(rscloud_space_info)(private$id)
+
       if (!is.null(res$error)) {
         if (grepl("404", res$error$message)) {
           private$status <- "DELETED"
+          NULL
         } else {
           stop(res$error)
         }
       }
 
-      invisible(NULL)
+      res$result
     }
   )
 )
