@@ -46,6 +46,7 @@ request_token <- function() {
 get_rscloud_token <- function() .globals$rscloud_token$access_token
 set_rscloud_token <- function(token) {
   .globals$rscloud_token <- token
+  .globals$rscloud_token_set_time <- Sys.time()
 }
 
 #' RStudio Cloud API Authentication
