@@ -18,7 +18,7 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
     path = c(version, path)
   )
 
-  ua <- httr::user_agent("https://github.com/rstudio/rscloud")
+  ua <- httr::user_agent(glue::glue("rscloud/{packageVersion('rscloud')}"))
   auth_header <- httr::add_headers(
     Authorization = glue::glue("Bearer {get_rscloud_token()}")
   )
