@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 # rscloud
 
 <!-- badges: start -->
+[![Travis build status](https://travis-ci.org/kevinykuo/rscloud.svg?branch=master)](https://travis-ci.org/kevinykuo/rscloud)
+[![Codecov test coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
 API wrappers for the rstudio.cloud service.  The initial release includes APIs for managing space memberships, and listing projects within a space. 
@@ -41,7 +44,7 @@ The entry point to most of the functionality is a *space*. To see the list of sp
 ```{r, include  = FALSE, eval = TRUE}
 library(rscloud)
 # clean up
-space <- rscloud_space(31783)
+space <- rscloud_space(name = "test-space-1")
 
 members <- space %>% 
   space_member_list() %>% 

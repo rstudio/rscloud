@@ -5,6 +5,12 @@
 
 <!-- badges: start -->
 
+[![Travis build
+status](https://travis-ci.org/kevinykuo/rscloud.svg?branch=master)](https://travis-ci.org/kevinykuo/rscloud)
+[![Codecov test
+coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
 API wrappers for the rstudio.cloud service. The initial release includes
@@ -40,8 +46,8 @@ rscloud_space_list()
 #> # A tibble: 2 x 16
 #>   space_id name  description project_count user_count account_id
 #>      <int> <chr> <chr>               <int>      <int>      <int>
-#> 1    31783 test… foo bar                 0          1     326004
-#> 2    31785 test… foo bar two             0          1     326004
+#> 1    31783 test… foo bar                 2          1     326004
+#> 2    31785 test… foo bar two             0        102     326004
 #> # … with 10 more variables: project_max <int>, visibility <chr>,
 #> #   updated_time <dttm>, access <chr>, created_time <dttm>,
 #> #   default_project_id <lgl>, default_member_role <chr>,
@@ -57,7 +63,7 @@ space <- rscloud_space(31783)
 space
 #> RStudio Cloud Space (ID: 31783)
 #> <test-space-1>
-#>   users: 1 | projects: 0
+#>   users: 1 | projects: 2
 ```
 
 Adding members to a space can be done via `space_member_add()`:
@@ -69,7 +75,7 @@ space %>%
 space
 #> RStudio Cloud Space (ID: 31783)
 #> <test-space-1>
-#>   users: 2 | projects: 0
+#>   users: 2 | projects: 2
 ```
 
 You can get a tidy data frame of space members with
@@ -81,7 +87,7 @@ space %>%
 #> # A tibble: 2 x 21
 #>   user_id display_name email updated_time        created_time       
 #>     <int> <chr>        <chr> <dttm>              <dttm>             
-#> 1  370063 rscloud0 ke… kevi… 2019-09-24 13:56:01 2019-09-24 04:41:46
+#> 1  370063 rscloud0 ke… kevi… 2019-09-25 20:30:11 2019-09-24 04:41:46
 #> 2  370067 rscloud1 ke… kevi… 2019-09-24 04:46:43 2019-09-24 04:46:33
 #> # … with 16 more variables: github_auth_token <lgl>, first_name <chr>,
 #> #   last_name <chr>, grant <list>, login_attempts <int>,
@@ -105,7 +111,7 @@ space %>%
 space
 #> RStudio Cloud Space (ID: 31783)
 #> <test-space-1>
-#>   users: 4 | projects: 0
+#>   users: 4 | projects: 2
 ```
 
 You can also work with outstanding invitations:
@@ -118,8 +124,8 @@ invitations
 #> # A tibble: 2 x 15
 #>   invitation_id space_id email type  accepted expired redirect accepted_by
 #>           <int>    <int> <chr> <chr> <lgl>    <lgl>   <chr>    <lgl>      
-#> 1         67782    31783 kevi… spac… FALSE    FALSE   https:/… NA         
-#> 2         67783    31783 kevi… spac… FALSE    FALSE   https:/… NA         
+#> 1         68120    31783 kevi… spac… FALSE    FALSE   https:/… NA         
+#> 2         68121    31783 kevi… spac… FALSE    FALSE   https:/… NA         
 #> # … with 7 more variables: updated_time <dttm>, sender <list>,
 #> #   space_role <chr>, link <chr>, branding <chr>, created_time <dttm>,
 #> #   message <lgl>
