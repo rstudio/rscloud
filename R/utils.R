@@ -1,77 +1,122 @@
-`%||%` <- function(x, y) if (is.null(x)) y else x
+#' @importFrom rlang %||%
+rlang::`%||%`
 
-check_auth <- function() {
+#' @importFrom magrittr %>%
+#' @export
+magrittr::`%>%`
 
-  if (!exists("last_refresh", .globals))
-    stop("The `initialize_token()` command has not been run yet.  Please run it first and try this function again. ",
-         call. = FALSE)
-
-  if (as.numeric(difftime(as.POSIXct(Sys.time()), .globals$last_refresh,
-                          units = "mins")) > 59) {
-    initialize_token()
-  }
-
+#' Configuring RStudio Cloud Host and API URL
+#'
+#' These functions configure the host and API URL settings for
+#'   authentication and requests. See details for setting preferences.
+#'
+#' @details The rscloud package reads host and API URL settings
+#'   in this order:
+#' \enumerate{
+#'   \item The value set by the user using `rscloud_api_url_set()` or `rscloud_host_set()`
+#'   \item The environment variables `RSCLOUD_API_URL` and `RSCLOUD_HOST`
+#'   \item The defaults `https://api.rstudio.cloud` and `rstudio.cloud`
+#' }
+#'
+#' @param url The URL for the RStudio Cloud API.
+#' @export
+rscloud_api_url_set <- function(url) {
+  .globals$api_url <- url
+  invisible(NULL)
 }
 
-rscloud_GET <- function(path, ..., task = NULL, caller_subject = "space", version = "v1") {
-  url <- httr::modify_url(url = .globals$API_URL, path = c(version, path))
-
-  req <- httr::GET(url, ..., httr::config(token = .globals$rscloud_token))
-
-  if (req$status_code == 404) {
-    stop(paste("Couldn't find the requested", caller_subject),
-         call. = FALSE)
-  }
-
-  if (req$status_code == 403) {
-    stop(paste("You either don't have access, or the",caller_subject,"doesn't exist"),
-         call. = FALSE)
-  }
-
-  httr::stop_for_status(req, task = task)
-  httr::content(req)
+#' @rdname rscloud_api_url_set
+#' @export
+rscloud_api_url_get <- function() {
+  .globals$api_url %||%
+    Sys.getenv("RSCLOUD_API_URL", unset = "https://api.rstudio.cloud")
 }
 
-rscloud_DELETE <- function(path, ..., version = "v1") {
-  url <- httr::modify_url(url = .globals$API_URL, path = c(version, path))
-
-  purrr::safely(httr::DELETE)(url, ... , httr::config(token = .globals$rscloud_token))
-
-  #TODO: Check for a variety of fun http status codes and provide a better error message
-
+#' @rdname rscloud_api_url_set
+#' @param host The hostname of the RStudio Cloud service.
+#' @export
+rscloud_host_set <- function(host) {
+  .globals$rscloud_host <- host
+  invisible(NULL)
 }
 
-rscloud_POST <- function(path, ... , task = NULL, caller_subject = "space", version = "v1") {
-  url <- httr::modify_url(url = .globals$API_URL,
-                          path = c(version, path))
-
-  req <- httr::POST(url, ..., encode = "json",
-                    httr::config(token = .globals$rscloud_token))
-
-  if (req$status_code == 409) {
-    stop(paste("A duplicate request was previously made for", caller_subject),
-         call. = FALSE)
-  }
-
-  httr::stop_for_status(req, task = task)
-  req
+#' @rdname rscloud_api_url_set
+#' @export
+rscloud_host_get <- function() {
+  .globals$rscloud_host %||%
+    Sys.getenv("RSCLOUD_HOST", unset = "rstudio.cloud")
 }
 
-#' Convenience function to convert to a Posixct object
-parse_times <- function(df) {
-  dplyr::mutate(
-    df,
-    created_time = as.POSIXct(strptime(created_time, "%Y-%m-%dT%H:%M:%S")),
-    updated_time = as.POSIXct(strptime(updated_time, "%Y-%m-%dT%H:%M:%S"))
+collect_paginated <- function(response, path, collection = path, query = NULL) {
+
+  if (response$count == response$total)
+    return(response[[collection]])
+
+  l <- vector("list", response$total)
+  l[1:response$count] <- response[[collection]]
+
+  pb <- progress::progress_bar$new(
+    format = glue::glue(" Retrieving :what {collection} [:bar] :percent"),
+    total = response$total, clear = FALSE, width = 60, show_after = 0
   )
+
+  pb$tick(response$count, tokens = list(what = response$total))
+
+  get_items <- function(l, offset, count) {
+    if (offset >= length(l)) {
+      l
+    } else {
+      pb$tick(count, tokens = list(what = response$total))
+      response <- rscloud_rest(path, query = c(list(offset = offset, count = count), query))
+      l[(offset + 1):(offset + response$count)] <- response[[collection]]
+
+      get_items(l, offset + count, count)
+    }
+  }
+
+  get_items(l, response$count, response$count)
 }
 
-# Convenience functions for ui_* messages
-succeeded <- function(x) {
-  !httr::http_error(x$result)
+convert_na <- function(x) {
+  types <- purrr::map_chr(x, typeof)
+  target_type <- setdiff(types, "NULL") %>% unique()
+  na <- if (length(target_type) && !identical(target_type, "list")) {
+    switch(target_type,
+           character = NA_character_,
+           integer = NA_integer_,
+           double = NA_real_,
+           NA)
+  } else {
+    NA
+  }
+  purrr::map(x, ~ .x %||% na) %>%
+    purrr::simplify()
 }
 
-failed <- function(x) {
-  httr::http_error(x$result)
+tidy_list <- function(l) {
+  l %>%
+    purrr::transpose() %>%
+    purrr::map(convert_na) %>%
+    tibble::as_tibble()
 }
 
+verify_response_length <- function(response, collection, filters) {
+  if (length(response[[collection]]) == 0) {
+    if (is.null(filters)) {
+      stop(glue::glue("No {collection} found."), call. = FALSE)
+    } else {
+      stop(glue::glue("No {collection} with criteria \"{paste(filters, collapse = ',')}\" found"),
+           call. = FALSE)
+    }
+  }
+}
+
+is_valid_email <- function(x) {
+  grep("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])",
+       x, perl = TRUE)
+}
+
+are_you_sure <- function(x) {
+  cat(paste0("Are you sure you want to ", x, "?"))
+  utils::menu(c("yes", "no")) == 1
+}

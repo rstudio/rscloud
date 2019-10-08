@@ -2,98 +2,108 @@
 #'
 #' Retrieves the list of all outstanding invitations for the given space.
 #'
-#' @param space_id ID number of the space
+#' @inheritParams space_info
+#' @inheritParams rscloud_space_list
 #'
 #' @export
-space_invitation_get <- function(space_id) {
+space_invitation_list <- function(space, filters = NULL) {
+  space_id <- space_id(space)
 
-  check_auth()
+  query_list <- filters %>%
+    purrr::map(~list("filter" = .x)) %>%
+    append(list("filter" = paste0("space_id:", space_id))) %>%
+    purrr::flatten()
 
-  json_list <- rscloud_GET("invitations",
-                             query = list("filter" = paste0("space_id:", space_id)),
-                             task = paste0("Error retrieving invitations for: ", space_id))
+  response <- rscloud_rest(
+    "invitations",
+    query = query_list
+  )
 
+  verify_response_length(response, "invitations", filters)
 
-  if(length(json_list$invitations) == 0)
-    stop(paste0("No invitations found for space: ", space_id), call. = FALSE)
+  invitations <- collect_paginated(
+    response = response,
+    path = "invitations",
+    query = query_list
+  )
 
-  n_pages <- ceiling(json_list$total / json_list$count)
-
-  batch_size <- json_list$count
-
-  pages <- vector("list", n_pages)
-
-  for (i in seq_along(pages)) {
-    if (i == 1) {
-      pages[[1]] <- json_list$invitations
-    } else {
-      pages[[i]] <- rsconnect_GET("invitations",
-                    query = list("filter" = paste0("space_id:", space_id),
-                                 "offset" = (i-1)*batch_size),
-                    task = paste0("Error retrieving invitations for: ", space_id)
-                    )$invitations
-    }
-  }
-
-  ff <- tibble::tibble(invitations = pages)
-
-  if (nrow(ff) == 0)
-    stop("There are no invitations for this space", call. = FALSE)
-
-  df <- ff %>%
-    tidyr::unnest_longer(invitations) %>%
-    tidyr::unnest_wider(invitations) %>%
-    parse_times()
-
-  df %>% dplyr::rename(invitation_id = id) %>%
-    dplyr::select(invitation_id, space_id, email, type,
-                  accepted, expired, dplyr::everything())
+  invitations %>%
+    tidy_list() %>%
+    parse_times() %>%
+    dplyr::rename(invitation_id = .data$id) %>%
+    dplyr::select(.data$invitation_id, .data$space_id, .data$email,
+                  .data$type,
+                  .data$accepted, .data$expired, dplyr::everything()) %>%
+    new_tbl_invitation()
 }
 
 
-#' Send or resend invitation
+#' Send or Resend Invitations
 #'
 #' Sends or resends invitation with a given invitation ID that was previously
 #' created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
 #' this function does not also depend on a space ID.
 #'
-#' @param invitation_id ID number of the invitation
+#' @param invitations An invitation ID number or a data frame
+#'   of invitations returned by `space_invitation_list()`.
 #'
 #' @export
-invitation_send <- function(invitation_id) {
-  check_auth()
+invitation_send <- function(invitations) {
+  UseMethod("invitation_send")
+}
 
-  req <- rscloud_POST(path = c("invitations", invitation_id, "send"),
-                      task = paste0("Error resending invitation: ", invitation_id))
+#' @rdname invitation_send
+#' @export
+invitation_send.numeric <- function(invitations) {
+  response <- rscloud_rest(
+    path = c("invitations", invitations, "send"),
+    verb = "POST"
+  )
 
-  r <- httr::content(req)
+  invitation <- response %>%
+    purrr::map_if(is.null, ~ NA) %>%
+    purrr::map_if(is.list, ~list(.x)) %>%
+    tibble::as_tibble() %>%
+    new_tbl_invitation()
 
-  tidyr::spread(tibble::enframe(r), name, value)
+  invisible(invitation)
+}
+
+#' @rdname invitation_send
+#' @export
+invitation_send.tbl_invitation <- function(invitations) {
+  invitations %>%
+    dplyr::pull("invitation_id") %>%
+    purrr::walk(~ invitation_send.numeric(.x))
+
+  invisible(invitations)
 }
 
 
-#' Cancel existing invitation
+#' Cancel Invitations
 #'
-#' Cancels an existing invitation with a given invitation ID that was previously
-#' created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
-#' this function does not also depend on a space ID.
+#' Cancels existing invitations.
 #'
-#' @param invitation_id ID number of the invitation
+#' @inheritParams invitation_send
 #'
 #' @export
-invitation_rescind <- function(invitation_id) {
-
-  check_auth()
-
-  req <- rscloud_DELETE(path = c("invitations", invitation_id))
-
-  if (succeeded(req)) {
-    usethis::ui_done("Invitation {usethis::ui_value(invitation_id)} rescinded.")
-  }
-
-  if (failed(req)) {
-    usethis::ui_oops("Failed to rescind invitation {usethis::ui_value(invitation_id)}.")
-  }
-
+invitation_rescind <- function(invitations) {
+  UseMethod("invitation_rescind")
 }
 
+#' @rdname invitation_rescind
+#' @export
+invitation_rescind.numeric <- function(invitations) {
+  req <- rscloud_rest(path = c("invitations", invitations), verb = "DELETE")
+  invisible(NULL)
+}
+
+#' @rdname invitation_rescind
+#' @export
+invitation_rescind.tbl_invitation <- function(invitations) {
+  invitations %>%
+    dplyr::pull("invitation_id") %>%
+    purrr::walk(~ invitation_rescind.numeric(.x))
+
+  invisible(NULL)
+}

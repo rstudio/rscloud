@@ -2,12 +2,19 @@
 % Please edit documentation in R/invitations.R
 \name{invitation_send}
 \alias{invitation_send}
-\title{Send or resend invitation}
+\alias{invitation_send.numeric}
+\alias{invitation_send.tbl_invitation}
+\title{Send or Resend Invitations}
 \usage{
-invitation_send(invitation_id)
+invitation_send(invitations)
+
+\method{invitation_send}{numeric}(invitations)
+
+\method{invitation_send}{tbl_invitation}(invitations)
 }
 \arguments{
-\item{invitation_id}{ID number of the invitation}
+\item{invitations}{An invitation ID number or a data frame
+of invitations returned by `space_invitation_list()`.}
 }
 \description{
 Sends or resends invitation with a given invitation ID that was previously

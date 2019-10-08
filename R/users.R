@@ -3,109 +3,225 @@
 #' Returns the list of members for a given space. You must either be the admin
 #' of the space or your role must have permissions to see the members list.
 #'
-#' @param space_id ID number of the space
+#' @inheritParams space_info
+#' @inheritParams rscloud_space_list
 #'
 #' @export
-space_member_get <- function(space_id) {
+space_member_list <- function(space, filters = NULL) {
 
-  check_auth()
+  space_id <- space_id(space)
 
-  json_list <- rscloud_GET(path = c("spaces", space_id, "members"),
-                           task = paste("Error retrieving members for space: ", space_id)
-                           )
+  query_list <- filters %>%
+    purrr::map(~list("filter" = .x)) %>%
+    purrr::flatten()
 
-  if (length(json_list$users) == 0)
-    stop(paste0("No users found for space: ", space_id),
-         call. = FALSE)
+  response <- rscloud_rest(path = c("spaces", space_id, "members"),
+                            query = query_list)
 
-  n_pages <- ceiling(json_list$total / json_list$count)
+  verify_response_length(response, "users", filters)
 
-  batch_size <- json_list$count
-
-  pages <- vector("list", n_pages)
-
-  for (i in seq_along(pages)) {
-
-    if (i == 1) {
-      pages[[1]] <- json_list$users
-    } else {
-      offset <- (i - 1) * batch_size
-      pages[[i]] <- rscloud_GET(path = c("spaces", space_id, "members"),
-                                query = list(offset = offset),
-                                task = paste("Error retrieving members for space: ", space_id)
-                                )$users
-    }
-  }
-
-  # Rectangling
-  ff <- tibble::tibble(users = pages)
-  df <- ff %>%
-    tidyr::unnest_longer(users) %>%
-    tidyr::unnest_wider(users)
-
-  df %>%
-    dplyr::select(user_id = id, email, display_name, updated_time,
-           created_time, login_attempts, dplyr::everything()) %>%
-    parse_times()
+  users <- collect_paginated(response,
+                             path = c("spaces", space_id, "members"),
+                             collection = "users",
+                             query = query_list)
+  users %>%
+    tidy_list() %>%
+    dplyr::mutate_at(c("first_name", "last_name", "location", "organization"),
+                     function(l) purrr::map(l, ~.x %||% NA) %>% purrr::flatten_chr()) %>%
+    parse_times() %>%
+    dplyr::select(user_id = .data$id, .data$display_name,
+                  .data$email,
+                  .data$updated_time,
+                  .data$created_time, dplyr::everything())
 }
 
+#' Invite Users
+#'
+#' Invites users to a space.
+#'
+#' @inheritParams space_info
+#' @param users Email address of the user to add or a data frame of user information.
+#' @param ... Additional arguments.
+#'
+#' @details The `users` input should be a data frame consisting of the columns "user_email",
+#'   "email_invite", "email_message", and "space_role". Each row of the `users` data frame
+#'    denotes one user to be added. If any of these properties are specified in `...`, they
+#'    will take precendence and a message printed.
+#'
+#' @export
+space_member_add <- function(space, users, ...) {
+  UseMethod("space_member_add", users)
+}
 
-#' Invite a user to become a member of a space
-#'
-#' Invites a user to a space with their email address and with a given role,
-#' and can also prompt an invitation email if `email_invite` is set to `TRUE`.
-#'
-#'
-#' @param space_id ID number of the space
-#' @param user_email Email address of the user to add
+#' @rdname space_member_add
 #' @param email_invite Indicates whether an email should be sent to the user with the invite, `TRUE` by default
 #' @param email_message Message to be sent to the user should the `email_invite` flag be set to `TRUE`
 #' @param space_role Desired role for the user in the space
-#'
 #' @export
-space_member_add <- function( space_id, user_email,
-                      email_invite = TRUE, email_message = "You are invited to this space",
-                      space_role = "contributor") {
+space_member_add.character <- function(space, users,
+                                        email_invite = TRUE,
+                                        email_message = NULL,
+                                        space_role = "contributor", ...) {
+  if (!rlang::is_scalar_character(users)) stop(
+    "`users` must be a single email address. For adding multiple users please pass a data frame.",
+    call. = FALSE
+  )
 
-  check_auth()
-
-  roles <- space_role(space_id)
+  # TODO: don't check multiple times for the same role
+  roles <- space_role_list(space)
+  space_id <- space_id(space)
 
   if (!space_role %in% roles$role)
     stop(paste0("Role: ", space_role, " isn't a valid role for space: ", space_id))
 
-  user <- list(email = user_email, space_role = space_role)
-
+  user <- list(email = users, space_role = space_role)
 
   if (email_invite) {
     user <- c(user, invite_email = email_invite, invite_email_message = email_message)
   }
 
-  req <- rscloud_POST(path = c("spaces", space_id, "members"),
-                      body = user)
+  req <- rscloud_rest(path = c("spaces", space_id, "members"),
+                      data = user,
+                      verb = "POST")
+
+  invisible(space)
 }
 
+#' @rdname space_member_add
+#' @export
+space_member_add.data.frame <- function(space, users, ...) {
 
-#' Remove member from space
+  dots <- rlang::dots_list(...)
+
+  user_email <- users[["user_email"]] %||% stop("`users` must contain a 'user_email' column.",
+                                                call. = FALSE)
+
+  # TODO: refactor via function
+  overrides <- character()
+
+  users[["email_invite"]] <- if (!is.null(dots$email_invite)) {
+    overrides <- append(overrides, "email_invite")
+    dots$email_invite
+  } else {
+    users[["email_invite"]]
+  }
+
+  users[["email_message"]] <- if (!is.null(dots$email_message)) {
+    overrides <- append(overrides, "email_message")
+    dots$email_message
+  } else {
+    users[["email_message"]]
+  }
+
+  users[["space_role"]] <- if (!is.null(dots$space_role)) {
+    overrides <- append(overrides, "space_role")
+    dots$space_role
+  } else {
+    users[["space_role"]]
+  }
+
+  if (length(overrides)) {
+    message(glue::glue("
+         Using the following overrides:
+           {paste(overrides, purrr::map_chr(overrides, ~ dots[[.x]]), sep = ': ')}"
+    ))
+  }
+
+  suppressWarnings({
+    users %>%
+      dplyr::select(dplyr::one_of(
+        c("user_email", "email_invite", "email_message","space_role"))
+      )
+  }) %>%
+    dplyr::rename(users = .data$user_email) %>%
+    purrr::transpose() %>%
+    purrr::walk(~ rlang::exec(space_member_add.character, !!!.x, space = space))
+
+  invisible(space)
+}
+
+#' Remove Members
 #'
-#' Removes a member with a given user ID from the space.
+#' Removes members.
 #'
-#' @param space_id ID number of the space
-#' @param user_id ID number of the user
+#' @inheritParams space_info
+#' @param users ID number or email of the user to be removed, or a data frame
+#'   with either a `user_id` or `email` column.
+#' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space_id, user_id) {
+space_member_remove <- function(space, users, ask = TRUE) {
+  UseMethod("space_member_remove", users)
+}
 
-  check_auth()
+#' @rdname space_member_remove
+#' @export
+space_member_remove.numeric <- function(space, users, ask = TRUE) {
+  if (!rlang::is_scalar_integerish(users)) stop(
+    "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
+    call. = FALSE
+  )
 
-  req <- rscloud_DELETE(path = c("spaces", space_id, "members", user_id))
-
-  if (succeeded(req)) {
-    usethis::ui_done("Removed user {usethis::ui_value(user_id)} from space {usethis::ui_value(space_id)}.")
+  if (ask) {
+    really_remove <- are_you_sure(glue::glue(
+      "remove member `{users}`"
+    ))
+    if (!really_remove) return(invisible(space))
   }
 
-  if (failed(req)) {
-    usethis::ui_oops("Failed to remove user {usethis::ui_value(user_id)} from space {usethis::ui_value(space_id)}.")
+  space_id <- space_id(space)
+  req <- rscloud_rest(path = c("spaces", space_id, "members", users),
+                      verb = "DELETE")
+
+  invisible(space)
+}
+
+#' @rdname space_member_remove
+#' @export
+space_member_remove.character <- function(space, users, ask = TRUE) {
+
+  if (!is_valid_email(users)) stop(
+    "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
+    call = FALSE
+  )
+
+  id_to_remove <- space %>%
+    space_member_list(filters = glue::glue("email:{tolower(users)}")) %>%
+    dplyr::pull(.data$user_id)
+
+  if (ask) {
+    really_remove <- are_you_sure(glue::glue(
+      "remove member <{tolower(users)}>"
+    ))
+    if (!really_remove) return(invisible(space))
   }
 
+  space %>%
+    space_member_remove.numeric(id_to_remove)
+}
+
+#' @rdname space_member_remove
+#' @export
+space_member_remove.data.frame <- function(space, users, ask = TRUE) {
+
+  users <- if (!is.null(user_id <- users[["user_id"]])) {
+    message("Using `user_id` column.")
+    user_id
+  } else if (!is.null(email <- users[["email"]])) {
+    message("Using `email` column.")
+    email
+  } else {
+    stop("`users` must contain a `user_id` or `email` column.",
+         call. = FALSE)
+  }
+
+  if (ask) {
+    really_remove <- are_you_sure(glue::glue(
+      "remove {length(users)} members"
+    ))
+    if (!really_remove) return(invisible(space))
+  }
+
+  purrr::walk(users, ~ space_member_remove(space, .x, ask = FALSE))
+  invisible(space)
 }
