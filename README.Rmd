@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 # rscloud
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/kevinykuo/rscloud.svg?branch=master)](https://travis-ci.org/kevinykuo/rscloud)
+[![Travis build status](https://travis-ci.org/rstudio/rscloud.svg?branch=master)](https://travis-ci.org/rstudio/rscloud)
 [![Codecov test coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->

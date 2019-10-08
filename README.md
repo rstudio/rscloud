@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Travis build
-status](https://travis-ci.org/kevinykuo/rscloud.svg?branch=master)](https://travis-ci.org/kevinykuo/rscloud)
+status](https://travis-ci.org/rstudio/rscloud.svg?branch=master)](https://travis-ci.org/rstudio/rscloud)
 [![Codecov test
 coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
 [![Lifecycle:
@@ -47,7 +47,7 @@ rscloud_space_list()
 #>   space_id name  description project_count user_count account_id
 #>      <int> <chr> <chr>               <int>      <int>      <int>
 #> 1    31783 test… foo bar                 2          1     326004
-#> 2    31785 test… foo bar two             0        102     326004
+#> 2    31785 test… foo bar two             0          1     326004
 #> # … with 10 more variables: project_max <int>, visibility <chr>,
 #> #   updated_time <dttm>, access <chr>, created_time <dttm>,
 #> #   default_project_id <lgl>, default_member_role <chr>,
@@ -124,8 +124,8 @@ invitations
 #> # A tibble: 2 x 15
 #>   invitation_id space_id email type  accepted expired redirect accepted_by
 #>           <int>    <int> <chr> <chr> <lgl>    <lgl>   <chr>    <lgl>      
-#> 1         68120    31783 kevi… spac… FALSE    FALSE   https:/… NA         
-#> 2         68121    31783 kevi… spac… FALSE    FALSE   https:/… NA         
+#> 1         69227    31783 kevi… spac… FALSE    FALSE   https:/… NA         
+#> 2         69228    31783 kevi… spac… FALSE    FALSE   https:/… NA         
 #> # … with 7 more variables: updated_time <dttm>, sender <list>,
 #> #   space_role <chr>, link <chr>, branding <chr>, created_time <dttm>,
 #> #   message <lgl>
