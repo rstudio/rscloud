@@ -225,3 +225,41 @@ space_member_remove.data.frame <- function(space, users, ask = TRUE) {
   purrr::walk(users, ~ space_member_remove(space, .x, ask = FALSE))
   invisible(space)
 }
+
+#' Get member usage information
+#'
+#' Returns the list of members and their usage information for a given space.
+#' You must either be the admin of the space or your role must have permissions
+#' to see the members list.
+#'
+#' @inheritParams space_info
+#' @inheritParams rscloud_space_list
+#'
+#' @export
+space_member_usage <- function(space, filters = NULL) {
+
+  space_id <- space_id(space)
+
+  query_list <- filters %>%
+    purrr::map(~list("filter" = .x)) %>%
+    purrr::flatten()
+
+  response <- rscloud_rest(path = c("spaces", space_id, "members"),
+                           query = query_list)
+
+  verify_response_length(response, "users", filters)
+
+  users <- collect_paginated(response,
+                             path = c("spaces", space_id, "members"),
+                             collection = "users",
+                             query = query_list)
+  users %>%
+    tidy_list() %>%
+    dplyr::mutate_at(c("first_name", "last_name", "location", "organization"),
+                     function(l) purrr::map(l, ~.x %||% NA) %>% purrr::flatten_chr()) %>%
+    parse_times() %>%
+    dplyr::select(user_id = .data$id, .data$display_name,
+                  .data$email,
+                  .data$updated_time,
+                  .data$created_time, dplyr::everything())
+}
