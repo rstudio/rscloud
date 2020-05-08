@@ -235,31 +235,54 @@ space_member_remove.data.frame <- function(space, users, ask = TRUE) {
 #' @inheritParams space_info
 #' @inheritParams rscloud_space_list
 #'
+#' @example
+#' \dontrun{
+#' # Usage in the last 90 days for each user
+#' space_member_usage(space_id, filters = list(groupby = "user_id", from = "90d"))
+#' }
+#'
 #' @export
 space_member_usage <- function(space, filters = NULL) {
-
   space_id <- space_id(space)
 
-  query_list <- filters %>%
-    purrr::map(~list("filter" = .x)) %>%
-    purrr::flatten()
+  response <- rscloud_rest(
+    path = c("spaces", space_id, "usage"),
+    query = filters
+  )
 
-  response <- rscloud_rest(path = c("spaces", space_id, "members"),
-                           query = query_list)
+  verify_response_length(response, "results", filters)
 
-  verify_response_length(response, "users", filters)
-
-  users <- collect_paginated(response,
-                             path = c("spaces", space_id, "members"),
-                             collection = "users",
-                             query = query_list)
-  users %>%
-    tidy_list() %>%
-    dplyr::mutate_at(c("first_name", "last_name", "location", "organization"),
-                     function(l) purrr::map(l, ~.x %||% NA) %>% purrr::flatten_chr()) %>%
-    parse_times() %>%
-    dplyr::select(user_id = .data$id, .data$display_name,
-                  .data$email,
-                  .data$updated_time,
-                  .data$created_time, dplyr::everything())
+  # tidy results
+  # differently based on whether call was grouped by users or not
+  if ("groupby" %in% names(filters)) {
+    response$results %>%
+      tidy_list() %>%
+      tidyr::unnest_wider(summary) %>%
+      dplyr::mutate(last_activity = as.POSIXct(last_activity / 1000, origin = "1970-01-01")) %>%
+      # rename to match output of space_member_list
+      dplyr::rename(
+        display_name = user_display_name,
+        first_name = user_first_name,
+        last_name = user_last_name
+      ) %>%
+      # reorder columns to roughly match output of space_member_list
+      dplyr::select(
+        user_id, display_name, first_name, last_name, last_activity, compute,
+        dplyr::starts_with("active"), dplyr::everything()
+      ) %>%
+      # capture from and until dates of API call
+      dplyr::mutate(
+        from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
+        until = as.POSIXct(response$until / 1000, origin = "1970-01-01")
+      )
+  } else {
+    response$results %>%
+      tibble::as_tibble() %>%
+      dplyr::mutate(last_activity = as.POSIXct(last_activity / 1000, origin = "1970-01-01")) %>%
+      # capture from and until dates of API call
+      dplyr::mutate(
+        from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
+        until = as.POSIXct(response$until / 1000, origin = "1970-01-01")
+      )
+  }
 }
