@@ -8,8 +8,14 @@
 \usage{
 space_member_add(space, users, ...)
 
-\method{space_member_add}{character}(space, users, email_invite = TRUE,
-  email_message = NULL, space_role = "contributor", ...)
+\method{space_member_add}{character}(
+  space,
+  users,
+  email_invite = TRUE,
+  email_message = NULL,
+  space_role = "contributor",
+  ...
+)
 
 \method{space_member_add}{data.frame}(space, users, ...)
 }
