@@ -16,3 +16,10 @@ Returns the list of members and their usage information for a given space.
 You must either be the admin of the space or your role must have permissions
 to see the members list.
 }
+\examples{
+\dontrun{
+# Usage in the last 90 days for each user
+space_member_usage(space, filters = list(groupby = "user_id", from = "90d"))
+}
+
+}
