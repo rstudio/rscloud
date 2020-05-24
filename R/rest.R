@@ -38,7 +38,7 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
     },
     DELETE = function() {
       httr::DELETE(
-        api_url,
+        api_url, query = query,
         auth_header, ua
       )
     },
