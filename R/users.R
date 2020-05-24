@@ -147,20 +147,27 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @inheritParams space_info
 #' @param users ID number or email of the user to be removed, or a data frame
 #'   with either a `user_id` or `email` column.
+#' @param remove_projects Whether to remove user's projects from the workspace
+#'   and move them to their personal space or to keep the projects in the
+#'   workspace.
 #' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space, users, ask = TRUE) {
+space_member_remove <- function(space, users, remove_projects = NULL, ask = TRUE) {
   UseMethod("space_member_remove", users)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.numeric <- function(space, users, ask = TRUE) {
-  if (!rlang::is_scalar_integerish(users)) stop(
-    "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
-    call. = FALSE
-  )
+space_member_remove.numeric <- function(space, users, remove_projects = NULL, ask = TRUE) {
+
+  if (!rlang::is_scalar_integerish(users)) {
+    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+  }
+
+  if (rlang::is_null(remove_projects)) {
+    usethis::ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
+  }
 
   if (ask) {
     really_remove <- are_you_sure(glue::glue(
@@ -170,39 +177,43 @@ space_member_remove.numeric <- function(space, users, ask = TRUE) {
   }
 
   space_id <- space_id(space)
+
+  remove_projects_value <- tolower(as.character(remove_projects))
+
   req <- rscloud_rest(path = c("spaces", space_id, "members", users),
-                      verb = "DELETE")
+                      verb = "DELETE",
+                      query = list(remove_projects = remove_projects_value))
+
+  usethis::ui_done("Removed member with {ui_field('user_id')} {ui_value(users)}.")
 
   invisible(space)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.character <- function(space, users, ask = TRUE) {
+space_member_remove.character <- function(space, users, remove_projects = NULL, ask = TRUE) {
 
-  if (!is_valid_email(users)) stop(
-    "`users` must be a single user ID or email. For removing multiple users please pass a data frame.",
-    call = FALSE
-  )
+  if (!is_valid_email(users)) {
+    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+  }
 
   id_to_remove <- space %>%
     space_member_list(filters = glue::glue("email:{tolower(users)}")) %>%
     dplyr::pull(.data$user_id)
 
-  if (ask) {
-    really_remove <- are_you_sure(glue::glue(
-      "remove member <{tolower(users)}>"
-    ))
-    if (!really_remove) return(invisible(space))
-  }
-
-  space %>%
-    space_member_remove.numeric(id_to_remove)
+  space_member_remove(space,
+                      users = id_to_remove,
+                      remove_projects = remove_projects,
+                      ask = ask)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.data.frame <- function(space, users, ask = TRUE) {
+space_member_remove.data.frame <- function(space, users, remove_projects = NULL, ask = TRUE) {
+
+  if (rlang::is_null(remove_projects)) {
+    ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
+  }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
     message("Using `user_id` column.")
@@ -222,7 +233,7 @@ space_member_remove.data.frame <- function(space, users, ask = TRUE) {
     if (!really_remove) return(invisible(space))
   }
 
-  purrr::walk(users, ~ space_member_remove(space, .x, ask = FALSE))
+  purrr::walk(users, space_member_remove, space = space, remove_projects = remove_projects, ask = FALSE)
   invisible(space)
 }
 
@@ -235,18 +246,18 @@ space_member_remove.data.frame <- function(space, users, ask = TRUE) {
 #' @inheritParams space_info
 #' @inheritParams rscloud_space_list
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' # Usage in the last 90 days for each user
-#' space_member_usage(space_id, filters = list(groupby = "user_id", from = "90d"))
+#' space_member_usage(space, filters = list(groupby = "user_id", from = "90d"))
 #' }
 #'
 #' @export
 space_member_usage <- function(space, filters = NULL) {
-  space_id <- space_id(space)
+  spaceid <- space_id(space)
 
   response <- rscloud_rest(
-    path = c("spaces", space_id, "usage"),
+    path = c("spaces", spaceid, "usage"),
     query = filters
   )
 
@@ -277,7 +288,9 @@ space_member_usage <- function(space, filters = NULL) {
       )
   } else {
     response$results %>%
-      tibble::as_tibble() %>%
+      tibble::enframe() %>%
+      tidyr::unnest(value, keep_empty = TRUE) %>%
+      tidyr::pivot_wider(names_from = name, values_from = value) %>%
       dplyr::mutate(last_activity = as.POSIXct(last_activity / 1000, origin = "1970-01-01")) %>%
       # capture from and until dates of API call
       dplyr::mutate(
