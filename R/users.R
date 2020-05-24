@@ -212,7 +212,7 @@ space_member_remove.character <- function(space, users, remove_projects = NULL, 
 space_member_remove.data.frame <- function(space, users, remove_projects = NULL, ask = TRUE) {
 
   if (rlang::is_null(remove_projects)) {
-    ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
+    usethis::ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
