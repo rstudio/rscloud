@@ -269,16 +269,17 @@ space_member_usage <- function(space, filters = NULL) {
     response$results %>%
       tidy_list() %>%
       tidyr::unnest_wider(summary) %>%
-      dplyr::mutate(last_activity = as.POSIXct(last_activity / 1000, origin = "1970-01-01")) %>%
+      dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
       # rename to match output of space_member_list
       dplyr::rename(
-        display_name = user_display_name,
-        first_name = user_first_name,
-        last_name = user_last_name
+        display_name = .data$user_display_name,
+        first_name = .data$user_first_name,
+        last_name = .data$user_last_name
       ) %>%
       # reorder columns to roughly match output of space_member_list
       dplyr::select(
-        user_id, display_name, first_name, last_name, last_activity, compute,
+        .data$user_id, .data$display_name, .data$first_name,
+        .data$last_name, .data$last_activity, .data$compute,
         dplyr::starts_with("active"), dplyr::everything()
       ) %>%
       # capture from and until dates of API call
@@ -289,9 +290,9 @@ space_member_usage <- function(space, filters = NULL) {
   } else {
     response$results %>%
       tibble::enframe() %>%
-      tidyr::unnest(value, keep_empty = TRUE) %>%
-      tidyr::pivot_wider(names_from = name, values_from = value) %>%
-      dplyr::mutate(last_activity = as.POSIXct(last_activity / 1000, origin = "1970-01-01")) %>%
+      tidyr::unnest(.data$value, keep_empty = TRUE) %>%
+      tidyr::pivot_wider(names_from = .data$name, values_from = .data$value) %>%
+      dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
       # capture from and until dates of API call
       dplyr::mutate(
         from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
