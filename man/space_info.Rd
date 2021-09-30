@@ -7,7 +7,7 @@
 space_info(space)
 }
 \arguments{
-\item{space}{A space object created using `rscloud_space()`.}
+\item{space}{A space object created using \code{rscloud_space()}.}
 }
 \description{
 Obtain information on a space.

@@ -23,7 +23,7 @@ Imports:
     jsonlite,
     rlang,
     R6
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown,
@@ -31,3 +31,4 @@ Suggests:
     testthat (>= 2.1.0),
     withr
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)

@@ -7,7 +7,7 @@
 space_id(space)
 }
 \arguments{
-\item{space}{A space object created using `rscloud_space()`.}
+\item{space}{A space object created using \code{rscloud_space()}.}
 }
 \description{
 Get the ID of a space.

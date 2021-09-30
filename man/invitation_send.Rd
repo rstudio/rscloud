@@ -14,7 +14,7 @@ invitation_send(invitations)
 }
 \arguments{
 \item{invitations}{An invitation ID number or a data frame
-of invitations returned by `space_invitation_list()`.}
+of invitations returned by \code{space_invitation_list()}.}
 }
 \description{
 Sends or resends invitation with a given invitation ID that was previously

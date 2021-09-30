@@ -12,11 +12,11 @@ rscloud_space(space_id = NULL, name = NULL)
 \item{name}{The space name.}
 }
 \value{
-An `rscloud_space` object.
+An \code{rscloud_space} object.
 }
 \description{
 Returns a space object given the space ID or the space name.
 }
 \details{
-Exactly one of `space_id` or `name` must be specified.
+Exactly one of \code{space_id} or \code{name} must be specified.
 }
