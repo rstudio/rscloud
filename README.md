@@ -70,7 +70,7 @@ Adding members to a space can be done via `space_member_add()`:
 
 ``` r
 space %>% 
-  space_member_add("kevin.kuo+test1@rstudio.com")
+  space_member_add("mine+test1@rstudio.com")
 
 space
 #> RStudio Cloud Space (ID: 31783)
@@ -102,7 +102,7 @@ useful when working with spreadsheets of class
 rosters:
 
 ``` r
-emails <- c("kevin.kuo+test2@rstudio.com", "kevin.kuo+test3@rstudio.com")
+emails <- c("mine+test2@rstudio.com", "mine+test3@rstudio.com")
 df <- tibble::tibble(user_email = emails)
 
 space %>% 

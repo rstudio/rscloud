@@ -5,7 +5,7 @@ clean_up <- function() {
 
   members <- space %>%
     space_member_list() %>%
-    dplyr::filter(email != "kevin.kuo+rscloud@rstudio.com")
+    dplyr::filter(email != "mine+rscloud@rstudio.com")
   space %>%
     purrr::safely(space_member_remove)(members, ask = FALSE, remove_projects = TRUE)
 
