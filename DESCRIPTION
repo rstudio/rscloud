@@ -32,3 +32,4 @@ Suggests:
     withr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+URL: https://rstudio.github.io/rscloud
