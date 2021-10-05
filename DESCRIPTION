@@ -8,6 +8,8 @@ Description: Provides an R client to the rstudio.cloud REST APIs to
 License: MIT + file LICENSE
 URL: https://github.com/rstudio/rscloud
 BugReports: https://github.com/rstudio/rscloud/issues
+Depends:
+    R (>= 3.3)
 Imports: 
     dplyr,
     glue,
