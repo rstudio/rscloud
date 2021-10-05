@@ -2,36 +2,35 @@ Package: rscloud
 Title: Provides an R client to the rstudio.cloud REST APIs
 Version: 0.0.0.9001
 Authors@R: 
-    person(given = "Tareef",
-           family = "Kawaf",
-           role = c("aut", "cre"),
-           email = "tareef@rstudio.com")
-Description: Provides an R client to the rstudio.cloud REST APIs to facilitate the adding and removing of members to spaces.
+    person("Tareef", "Kawaf", , "tareef@rstudio.com", role = c("aut", "cre"))
+Description: Provides an R client to the rstudio.cloud REST APIs to
+    facilitate the adding and removing of members to spaces.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Imports: 
-    httr,
-    tibble,
-    dplyr,
-    magrittr,
-    tidyr (>= 1.0.0),
-    purrr,
-    usethis,
-    progress,
-    glue,
-    jsonlite,
-    rlang,
-    R6
-RoxygenNote: 7.1.2
-Suggests: 
-    knitr,
-    rmarkdown,
-    covr,
-    testthat (>= 3.0.0),
-    withr
-VignetteBuilder: knitr
-Roxygen: list(markdown = TRUE)
 URL: https://github.com/rstudio/rscloud
 BugReports: https://github.com/rstudio/rscloud/issues
+Imports: 
+    dplyr,
+    glue,
+    httr,
+    jsonlite,
+    magrittr,
+    progress,
+    purrr,
+    R6,
+    rlang,
+    tibble,
+    tidyr (>= 1.0.0),
+    usethis
+Suggests: 
+    covr,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    withr
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
