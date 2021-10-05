@@ -8,7 +8,7 @@
 [![Codecov test
 coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/rstudio/rscloud/workflows/R-CMD-check/badge.svg)](https://github.com/rstudio/rscloud/actions)
 <!-- badges: end -->
 
@@ -122,9 +122,9 @@ invitations
 #> # A tibble: 3 × 16
 #>   invitation_id space_id email   type   accepted expired redirect    accepted_by
 #>           <int>    <int> <chr>   <chr>  <lgl>    <lgl>   <chr>       <lgl>      
-#> 1        202191   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 2        202192   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 3        202193   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 1        202197   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 2        202198   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 3        202199   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
 #> # … with 8 more variables: updated_time <dttm>, sender <list>,
 #> #   sso_enabled <lgl>, space_role <chr>, link <chr>, branding <chr>,
 #> #   created_time <dttm>, message <lgl>

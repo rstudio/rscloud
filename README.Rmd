@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/rstudio/rscloud/workflows/R-CMD-check/badge.svg)](https://github.com/rstudio/rscloud/actions)
 <!-- badges: end -->
 
