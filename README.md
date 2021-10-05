@@ -5,12 +5,11 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.org/rstudio/rscloud.svg?branch=master)](https://travis-ci.org/rstudio/rscloud)
 [![Codecov test
 coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/rstudio/rscloud/workflows/R-CMD-check/badge.svg)](https://github.com/rstudio/rscloud/actions)
 <!-- badges: end -->
 
 API wrappers for the rstudio.cloud service. The initial release includes
@@ -43,10 +42,11 @@ list of spaces you have access to, you can use the
 ``` r
 library(rscloud)
 rscloud_space_list()
-#> # A tibble: 1 × 17
+#> # A tibble: 2 × 17
 #>   space_id name         description project_count user_count account_id project_max
 #>      <int> <chr>        <chr>               <int>      <int>      <int>       <int>
-#> 1   178750 test-space-1 Test space…             0          1    1093053       10000
+#> 1   178750 test-space-1 Test space…             2          1    1093053       10000
+#> 2   178762 test-space-2 <NA>                    0          1    1093053       10000
 #> # … with 10 more variables: visibility <chr>, space_role <chr>, access <chr>,
 #> #   created_time <dttm>, default_project_id <lgl>, default_member_role <chr>,
 #> #   access_code <lgl>, permissions <list>, updated_time <dttm>, user_max <int>
@@ -61,7 +61,7 @@ space <- rscloud_space(178750)
 space
 #> RStudio Cloud Space (ID: 178750)
 #> <test-space-1>
-#>   users: 1 | projects: 0
+#>   users: 1 | projects: 2
 ```
 
 Adding members to a space can be done via `space_member_add()`:
@@ -73,7 +73,7 @@ space %>%
 space
 #> RStudio Cloud Space (ID: 178750)
 #> <test-space-1>
-#>   users: 2 | projects: 0
+#>   users: 2 | projects: 2
 ```
 
 You can get a tidy data frame of space members with
@@ -109,7 +109,7 @@ space %>%
 space
 #> RStudio Cloud Space (ID: 178750)
 #> <test-space-1>
-#>   users: 4 | projects: 0
+#>   users: 4 | projects: 2
 ```
 
 You can also work with outstanding invitations:
@@ -122,9 +122,9 @@ invitations
 #> # A tibble: 3 × 16
 #>   invitation_id space_id email   type   accepted expired redirect    accepted_by
 #>           <int>    <int> <chr>   <chr>  <lgl>    <lgl>   <chr>       <lgl>      
-#> 1        202139   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 2        202140   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 3        202141   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 1        202191   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 2        202192   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 3        202193   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
 #> # … with 8 more variables: updated_time <dttm>, sender <list>,
 #> #   sso_enabled <lgl>, space_role <chr>, link <chr>, branding <chr>,
 #> #   created_time <dttm>, message <lgl>
