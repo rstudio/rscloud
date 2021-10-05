@@ -5,7 +5,7 @@ test_that("space listing works", {
 
   expect_identical(
     df$description,
-    "foo bar"
+    "Test space for the rscloud package"
   )
 })
 

@@ -8,6 +8,14 @@
 \description{
 Provides an R client to the rstudio.cloud REST APIs to facilitate the adding and removing of members to spaces.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/rstudio/rscloud}
+  \item Report bugs at \url{https://github.com/rstudio/rscloud/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Tareef Kawaf \email{tareef@rstudio.com}
 

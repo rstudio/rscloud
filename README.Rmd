@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/rstudio/rscloud.svg?branch=master)](https://travis-ci.org/rstudio/rscloud)
 [![Codecov test coverage](https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/rscloud?branch=master)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 API wrappers for the rstudio.cloud service.  The initial release includes APIs for managing space memberships, and listing projects within a space. 
@@ -48,12 +48,12 @@ space <- rscloud_space(name = "test-space-1")
 
 members <- space %>% 
   space_member_list() %>% 
-  dplyr::filter(email != "mine+rscloud@rstudio.com")
+  dplyr::filter(email != "rscloud.test.01@gmail.com")
 space %>% 
-  purrr::safely(space_member_remove)(members, ask = FALSE)
+  purrr::safely(space_member_remove)(members, remove_projects = TRUE, ask = FALSE)
 
 space %>% 
-  purrr::possibly(space_invitation_list, otherwise =NULL)() %>% 
+  purrr::possibly(space_invitation_list, otherwise = NULL)() %>% 
   purrr::safely(invitation_rescind)()
 ```
 
@@ -66,7 +66,7 @@ rscloud_space_list()
 To create a space object, use the `rscloud_space()` function:
 
 ```{r}
-space <- rscloud_space(31783)
+space <- rscloud_space(178750)
 # you can also use the space name
 # space <- rstudio_space(name = "test-space-1")
 space
@@ -91,11 +91,14 @@ space %>%
 You can also provide a data frame of user information, which can be useful when working with spreadsheets of class rosters:
 
 ```{r}
-emails <- c("mine+test2@rstudio.com", "mine+test3@rstudio.com")
-df <- tibble::tibble(user_email = emails)
+roster <- tibble::tribble(
+  ~user_email,
+  "mine+test2@rstudio.com", 
+  "mine+test3@rstudio.com"
+)
 
 space %>% 
-  space_member_add(df)
+  space_member_add(roster)
 
 space
 ```
