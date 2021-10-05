@@ -39,6 +39,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      RSCLOUD_CLIENT_ID: ${{ secrets.RSCLOUD_CLIENT_ID }}
+      RSCLOUD_CLIENT_SECRET: ${{ secrets.RSCLOUD_CLIENT_SECRET }}
 
     steps:
       - uses: actions/checkout@v2
