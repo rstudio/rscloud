@@ -37,5 +37,3 @@ test_that("space_role_list() works", {
     c("contributor", "viewer", "admin", "moderator")
   )
 })
-
-

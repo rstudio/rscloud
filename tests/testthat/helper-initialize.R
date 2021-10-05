@@ -10,7 +10,7 @@ clean_up <- function() {
     purrr::safely(space_member_remove)(members, remove_projects = TRUE, ask = FALSE)
 
   space %>%
-    purrr::possibly(space_invitation_list, otherwise =NULL)() %>%
+    purrr::possibly(space_invitation_list, otherwise = NULL)() %>%
     purrr::safely(invitation_rescind)()
   invisible(NULL)
 }

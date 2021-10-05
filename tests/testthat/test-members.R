@@ -1,5 +1,4 @@
 test_that("member adding, invitation rescinding", {
-
   email <- tolower("mine+test201@rstudio.com")
 
   space <- rscloud_space(name = "test-space-1")
@@ -22,7 +21,6 @@ test_that("member adding, invitation rescinding", {
   expect_null(value)
 
   expect_snapshot_output(print(space))
-
 })
 
 test_that("batch member adding/invitation rescinding", {
@@ -50,5 +48,4 @@ test_that("batch member adding/invitation rescinding", {
   expect_null(value)
 
   expect_snapshot_output(print(space))
-
 })

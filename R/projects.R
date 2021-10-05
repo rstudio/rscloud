@@ -7,15 +7,14 @@
 #'
 #' @export
 space_project_list <- function(space, filters = NULL) {
-
   space_id <- space_id(space)
   query_list <- filters %>%
-    purrr::map(~list("filter" = .x)) %>%
+    purrr::map(~ list("filter" = .x)) %>%
     append(list("filter" = paste0("space_id:", space_id))) %>%
     purrr::flatten()
 
   response <- rscloud_rest("projects",
-                            query = query_list
+    query = query_list
   )
 
   verify_response_length(response, "projects", filters)
@@ -26,9 +25,11 @@ space_project_list <- function(space, filters = NULL) {
     tidy_list() %>%
     tidyr::hoist(.data$author, display_name = "display_name") %>%
     parse_times() %>%
-    dplyr::select(.data$id, .data$name, .data$display_name, .data$author_id,
-                  .data$status,
-                  .data$updated_time,
-                  .data$visibility,
-                  .data$created_time, dplyr::everything())
+    dplyr::select(
+      .data$id, .data$name, .data$display_name, .data$author_id,
+      .data$status,
+      .data$updated_time,
+      .data$visibility,
+      .data$created_time, dplyr::everything()
+    )
 }

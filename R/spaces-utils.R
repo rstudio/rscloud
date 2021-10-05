@@ -9,7 +9,7 @@ RSCloudSpace <- R6::R6Class("RSCloudSpace",
 
       msg <- if (identical(private$status, "ACTIVE")) {
         glue::glue(
-        "RStudio Cloud Space (ID: {private$id})
+          "RStudio Cloud Space (ID: {private$id})
         <{info$name}>
           users: {info$user_count} | projects: {info$project_count}
         "
