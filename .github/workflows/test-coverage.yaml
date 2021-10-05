@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      RSCLOUD_CLIENT_ID: ${{ secrets.RSCLOUD_CLIENT_ID }}
+      RSCLOUD_CLIENT_SECRET: ${{ secrets.RSCLOUD_CLIENT_SECRET }}
 
     steps:
       - uses: actions/checkout@v2
