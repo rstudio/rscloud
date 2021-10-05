@@ -10,10 +10,7 @@ test_that("member adding, invitation rescinding", {
     c("RSCloudSpace", "R6")
   )
 
-  expect_known_output(
-    print(space),
-    "output/space-print-2.txt"
-  )
+  expect_snapshot_output(print(space))
 
   invitations <- space_invitation_list(space)
   expect_identical(
@@ -24,11 +21,8 @@ test_that("member adding, invitation rescinding", {
   value <- invitation_rescind(invitations$invitation_id)
   expect_null(value)
 
-  expect_known_output(
-    print(space),
-    "output/space-print-1.txt",
-    update = FALSE
-  )
+  expect_snapshot_output(print(space))
+
 })
 
 test_that("batch member adding/invitation rescinding", {
@@ -44,10 +38,7 @@ test_that("batch member adding/invitation rescinding", {
     c("RSCloudSpace", "R6")
   )
 
-  expect_known_output(
-    print(space),
-    "output/space-print-3.txt"
-  )
+  expect_snapshot_output(print(space))
 
   invitations <- space_invitation_list(space)
   expect_identical(
@@ -58,9 +49,6 @@ test_that("batch member adding/invitation rescinding", {
   value <- invitations %>% invitation_rescind()
   expect_null(value)
 
-  expect_known_output(
-    print(space),
-    "output/space-print-1.txt",
-    update = FALSE
-  )
+  expect_snapshot_output(print(space))
+
 })

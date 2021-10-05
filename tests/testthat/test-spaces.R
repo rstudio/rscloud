@@ -24,7 +24,7 @@ test_that("space constructor gives informative errors", {
 
 test_that("space print method", {
   space <- rscloud_space(name = "test-space-1")
-  expect_known_output(print(space), "output/space-print-1.txt")
+  expect_snapshot_output(print(space))
 })
 
 test_that("space_role_list() works", {

@@ -28,9 +28,10 @@ Suggests:
     knitr,
     rmarkdown,
     covr,
-    testthat (>= 2.1.0),
+    testthat (>= 3.0.0),
     withr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/rstudio/rscloud
 BugReports: https://github.com/rstudio/rscloud/issues
+Config/testthat/edition: 3
