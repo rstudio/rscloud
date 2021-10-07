@@ -2,7 +2,17 @@ Package: rscloud
 Title: Provides an R client to the rstudio.cloud REST APIs
 Version: 0.0.0.9001
 Authors@R: 
-    person("Tareef", "Kawaf", , "tareef@rstudio.com", role = c("aut", "cre"))
+    c(person(given = "Tareef",
+             family = "Kawaf",
+             role = "aut",
+             email = "tareef@rstudio.com"),
+      person(given = "Mine",
+             family = "\u00C7etinkaya-Rundel",
+             email = "mine@rstudio.com",
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0001-6452-2420")),
+      person(given = "RStudio",
+             role = c("cph", "fnd")))
 Description: Provides an R client to the rstudio.cloud REST APIs to
     facilitate the adding and removing of members to spaces.
 License: MIT + file LICENSE

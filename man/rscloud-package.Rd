@@ -17,7 +17,17 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Tareef Kawaf \email{tareef@rstudio.com}
+\strong{Maintainer}: Mine Çetinkaya-Rundel \email{mine@rstudio.com} (\href{https://orcid.org/0000-0001-6452-2420}{ORCID})
+
+Authors:
+\itemize{
+  \item Tareef Kawaf \email{tareef@rstudio.com}
+}
+
+Other contributors:
+\itemize{
+  \item RStudio [copyright holder, funder]
+}
 
 }
 \keyword{internal}
