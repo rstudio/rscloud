@@ -9,18 +9,19 @@
 #' @return A data frame of space attributes.
 #' @export
 rscloud_space_list <- function(filters = NULL) {
-
   filters <- c(filters, "visibility:private")
   query_list <- filters %>%
-    purrr::map(~list("filter" = .x)) %>%
+    purrr::map(~ list("filter" = .x)) %>%
     purrr::flatten()
 
   response <- rscloud_rest("spaces", query = query_list)
 
   verify_response_length(response, "spaces", filters)
 
-  spaces <- collect_paginated(response, path = "spaces", collection = "spaces",
-                              query = query_list)
+  spaces <- collect_paginated(response,
+    path = "spaces", collection = "spaces",
+    query = query_list
+  )
 
   spaces %>%
     tidy_list() %>%
@@ -57,30 +58,37 @@ parse_space_response <- function(response) {
 #' @param space_id The space ID.
 #' @param name The space name.
 #'
-#' @details Exactly one of `space_id` or `name` must be specified.
+#' @details Exactly one of `space_id` or `name` must be specified. This function
+#' is used to create an object that points to an existing space on RStudio Cloud,
+#' it does not create a new space.
 #'
 #' @return An `rscloud_space` object.
 #' @export
 rscloud_space <- function(space_id = NULL, name = NULL) {
+  if (!is.null(space_id) && !is.null(name)) {
+    stop(
+      "One of `space_id` or `name` must be specified.",
+      call. = FALSE
+    )
+  }
 
-  if (!is.null(space_id) && !is.null(name)) stop(
-    "One of `space_id` or `name` must be specified.",
-    call. = FALSE
-  )
-
-  if (is.null(space_id) && is.null(name)) stop(
-    "At least one of `space_id` or `name` must be specified.",
-    call. = FALSE
-  )
+  if (is.null(space_id) && is.null(name)) {
+    stop(
+      "At least one of `space_id` or `name` must be specified.",
+      call. = FALSE
+    )
+  }
 
   if (!is.null(space_id)) {
     rscloud_space_info(space_id) %>%
       RSCloudSpace$new()
   } else {
     df <- rscloud_space_list(filters = glue::glue("name:{name}"))
-    if (nrow(df) > 1) stop(
-      glue::glue("Multiple spaces with name '{name}' found.", call. = FALSE)
-    )
+    if (nrow(df) > 1) {
+      stop(
+        glue::glue("Multiple spaces with name '{name}' found.", call. = FALSE)
+      )
+    }
 
     RSCloudSpace$new(df)
   }

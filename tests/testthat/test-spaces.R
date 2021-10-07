@@ -1,3 +1,4 @@
+# test rscloud_space_list
 test_that("space listing works", {
   library(dplyr)
   df <- rscloud_space_list() %>%
@@ -5,10 +6,11 @@ test_that("space listing works", {
 
   expect_identical(
     df$description,
-    "foo bar"
+    "Test space for the rscloud package"
   )
 })
 
+# test rscloud_space
 test_that("space consutructor works", {
   expect_error(test_space_id <- space_id(rscloud_space(name = "test-space-1")), NA)
   expect_error(rscloud_space(test_space_id), NA)
@@ -24,7 +26,7 @@ test_that("space constructor gives informative errors", {
 
 test_that("space print method", {
   space <- rscloud_space(name = "test-space-1")
-  expect_known_output(print(space), "output/space-print-1.txt")
+  expect_snapshot_output(print(space))
 })
 
 test_that("space_role_list() works", {
@@ -37,5 +39,3 @@ test_that("space_role_list() works", {
     c("contributor", "viewer", "admin", "moderator")
   )
 })
-
-

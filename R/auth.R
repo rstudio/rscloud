@@ -1,7 +1,9 @@
-get_client_credentials_from_env <- function() list(
-  client_id = get_env_var("RSCLOUD_CLIENT_ID"),
-  client_secret = get_env_var("RSCLOUD_CLIENT_SECRET")
-)
+get_client_credentials_from_env <- function() {
+  list(
+    client_id = get_env_var("RSCLOUD_CLIENT_ID"),
+    client_secret = get_env_var("RSCLOUD_CLIENT_SECRET")
+  )
+}
 
 get_env_var <- function(var) {
   value <- Sys.getenv(var)
@@ -13,7 +15,7 @@ request_token <- function() {
   req_params <- purrr::compact(list(
     client_id = get_env_var("RSCLOUD_CLIENT_ID"),
     redirect_uri = NULL,
-    grant_type ="client_credentials",
+    grant_type = "client_credentials",
     code = NULL
   ))
 
@@ -24,14 +26,13 @@ request_token <- function() {
   )
 
   req <- httr::POST(client_credential_endpoint,
-                    encode = "form",
-                    body = req_params,
-                    httr::authenticate(
-                      get_env_var("RSCLOUD_CLIENT_ID"),
-                      get_env_var("RSCLOUD_CLIENT_SECRET"),
-                      type = "basic"
-                    )
-
+    encode = "form",
+    body = req_params,
+    httr::authenticate(
+      get_env_var("RSCLOUD_CLIENT_ID"),
+      get_env_var("RSCLOUD_CLIENT_SECRET"),
+      type = "basic"
+    )
   )
 
   httr::stop_for_status(

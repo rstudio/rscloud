@@ -10,7 +10,7 @@ space_invitation_list <- function(space, filters = NULL) {
   space_id <- space_id(space)
 
   query_list <- filters %>%
-    purrr::map(~list("filter" = .x)) %>%
+    purrr::map(~ list("filter" = .x)) %>%
     append(list("filter" = paste0("space_id:", space_id))) %>%
     purrr::flatten()
 
@@ -31,9 +31,11 @@ space_invitation_list <- function(space, filters = NULL) {
     tidy_list() %>%
     parse_times() %>%
     dplyr::rename(invitation_id = .data$id) %>%
-    dplyr::select(.data$invitation_id, .data$space_id, .data$email,
-                  .data$type,
-                  .data$accepted, .data$expired, dplyr::everything()) %>%
+    dplyr::select(
+      .data$invitation_id, .data$space_id, .data$email,
+      .data$type,
+      .data$accepted, .data$expired, dplyr::everything()
+    ) %>%
     new_tbl_invitation()
 }
 
@@ -46,6 +48,8 @@ space_invitation_list <- function(space, filters = NULL) {
 #'
 #' @param invitations An invitation ID number or a data frame
 #'   of invitations returned by `space_invitation_list()`.
+#'
+#' @seealso [space_member_add()]
 #'
 #' @export
 invitation_send <- function(invitations) {
@@ -61,8 +65,8 @@ invitation_send.numeric <- function(invitations) {
   )
 
   invitation <- response %>%
-    purrr::map_if(is.null, ~ NA) %>%
-    purrr::map_if(is.list, ~list(.x)) %>%
+    purrr::map_if(is.null, ~NA) %>%
+    purrr::map_if(is.list, ~ list(.x)) %>%
     tibble::as_tibble() %>%
     new_tbl_invitation()
 

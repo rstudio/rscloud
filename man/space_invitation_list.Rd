@@ -7,7 +7,7 @@
 space_invitation_list(space, filters = NULL)
 }
 \arguments{
-\item{space}{A space object created using `rscloud_space()`.}
+\item{space}{A space object created using \code{rscloud_space()}.}
 
 \item{filters}{A vector of filters to be AND'ed and applied to the request.}
 }

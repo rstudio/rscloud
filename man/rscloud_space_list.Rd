@@ -14,7 +14,7 @@ A data frame of space attributes.
 }
 \description{
 This will typically be the first call that a user makes to help determine
-  which spaces they have access to and to retrieve the space IDs that are
-  needed in many of the later calls for managing space memberships and
-  invitations.
+which spaces they have access to and to retrieve the space IDs that are
+needed in many of the later calls for managing space memberships and
+invitations.
 }

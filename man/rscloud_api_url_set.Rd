@@ -22,14 +22,14 @@ rscloud_host_get()
 }
 \description{
 These functions configure the host and API URL settings for
-  authentication and requests. See details for setting preferences.
+authentication and requests. See details for setting preferences.
 }
 \details{
 The rscloud package reads host and API URL settings
-  in this order:
+in this order:
 \enumerate{
-  \item The value set by the user using `rscloud_api_url_set()` or `rscloud_host_set()`
-  \item The environment variables `RSCLOUD_API_URL` and `RSCLOUD_HOST`
-  \item The defaults `https://api.rstudio.cloud` and `rstudio.cloud`
+\item The value set by the user using \code{rscloud_api_url_set()} or \code{rscloud_host_set()}
+\item The environment variables \code{RSCLOUD_API_URL} and \code{RSCLOUD_HOST}
+\item The defaults \verb{https://api.rstudio.cloud} and \code{rstudio.cloud}
 }
 }

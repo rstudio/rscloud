@@ -14,10 +14,13 @@ invitation_send(invitations)
 }
 \arguments{
 \item{invitations}{An invitation ID number or a data frame
-of invitations returned by `space_invitation_list()`.}
+of invitations returned by \code{space_invitation_list()}.}
 }
 \description{
 Sends or resends invitation with a given invitation ID that was previously
 created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
 this function does not also depend on a space ID.
+}
+\seealso{
+\code{\link[=space_member_add]{space_member_add()}}
 }

@@ -5,12 +5,12 @@ clean_up <- function() {
 
   members <- space %>%
     space_member_list() %>%
-    dplyr::filter(email != "kevin.kuo+rscloud@rstudio.com")
+    dplyr::filter(email != "rscloud.test.01@gmail.com")
   space %>%
-    purrr::safely(space_member_remove)(members, ask = FALSE, remove_projects = TRUE)
+    purrr::safely(space_member_remove)(members, remove_projects = TRUE, ask = FALSE)
 
   space %>%
-    purrr::possibly(space_invitation_list, otherwise =NULL)() %>%
+    purrr::possibly(space_invitation_list, otherwise = NULL)() %>%
     purrr::safely(invitation_rescind)()
   invisible(NULL)
 }

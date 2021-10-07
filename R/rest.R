@@ -1,15 +1,17 @@
 try_parse_response_as_text <- function(response) {
   raw_content <- httr::content(response, type = "raw")
-  tryCatch({
-    rawToChar(raw_content)
-  }, error = function(e) {
-    do.call(paste, as.list(raw_content))
-  })
+  tryCatch(
+    {
+      rawToChar(raw_content)
+    },
+    error = function(e) {
+      do.call(paste, as.list(raw_content))
+    }
+  )
 }
 
 rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
                          verb = "GET", version = "v1") {
-
   rscloud_authenticate()
 
   api_url <- httr::modify_url(
@@ -23,22 +25,24 @@ rscloud_rest <- function(path, query = NULL, data = NULL, task = NULL,
     Authorization = glue::glue("Bearer {get_rscloud_token()}")
   )
 
-  get_response <- switch(
-    verb,
+  get_response <- switch(verb,
     GET = function() {
-      httr::GET(api_url, query = query,
-                auth_header, ua)
+      httr::GET(api_url,
+        query = query,
+        auth_header, ua
+      )
     },
     POST = function() {
       httr::POST(api_url,
-                 body = data,
-                 encode = "json",
-                 auth_header, ua
+        body = data,
+        encode = "json",
+        auth_header, ua
       )
     },
     DELETE = function() {
       httr::DELETE(
-        api_url, query = query,
+        api_url,
+        query = query,
         auth_header, ua
       )
     },

@@ -7,7 +7,7 @@
 space_role_list(space)
 }
 \arguments{
-\item{space}{A space object created using `rscloud_space()`.}
+\item{space}{A space object created using \code{rscloud_space()}.}
 }
 \description{
 Returns valid roles for a given space and the permissions associated with each role.

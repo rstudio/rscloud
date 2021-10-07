@@ -1,3 +1,4 @@
+# test rscloud_host_get
 test_that("default host", {
   expect_identical(
     rscloud_host_get(),
@@ -29,6 +30,7 @@ test_that("`rscloud_host_set()` works", {
   rscloud_host_set(NULL)
 })
 
+# test rscloud_api_url_get
 test_that("default api url", {
   expect_identical(
     rscloud_api_url_get(),

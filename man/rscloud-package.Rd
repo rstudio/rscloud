@@ -8,8 +8,26 @@
 \description{
 Provides an R client to the rstudio.cloud REST APIs to facilitate the adding and removing of members to spaces.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/rstudio/rscloud}
+  \item Report bugs at \url{https://github.com/rstudio/rscloud/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Tareef Kawaf \email{tareef@rstudio.com}
+\strong{Maintainer}: Mine Çetinkaya-Rundel \email{mine@rstudio.com} (\href{https://orcid.org/0000-0001-6452-2420}{ORCID})
+
+Authors:
+\itemize{
+  \item Tareef Kawaf \email{tareef@rstudio.com}
+}
+
+Other contributors:
+\itemize{
+  \item RStudio [copyright holder, funder]
+}
 
 }
 \keyword{internal}

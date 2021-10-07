@@ -48,9 +48,9 @@ rscloud_host_get <- function() {
 }
 
 collect_paginated <- function(response, path, collection = path, query = NULL) {
-
-  if (response$count == response$total)
+  if (response$count == response$total) {
     return(response[[collection]])
+  }
 
   l <- vector("list", response$total)
   l[1:response$count] <- response[[collection]]
@@ -82,10 +82,11 @@ convert_na <- function(x) {
   target_type <- setdiff(types, "NULL") %>% unique()
   na <- if (length(target_type) && !identical(target_type, "list")) {
     switch(target_type,
-           character = NA_character_,
-           integer = NA_integer_,
-           double = NA_real_,
-           NA)
+      character = NA_character_,
+      integer = NA_integer_,
+      double = NA_real_,
+      NA
+    )
   } else {
     NA
   }
@@ -106,14 +107,17 @@ verify_response_length <- function(response, collection, filters) {
       stop(glue::glue("No {collection} found."), call. = FALSE)
     } else {
       stop(glue::glue("No {collection} with criteria \"{paste(filters, collapse = ',')}\" found"),
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 }
 
 is_valid_email <- function(x) {
   any(grepl("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])",
-       x, perl = TRUE))
+    x,
+    perl = TRUE
+  ))
 }
 
 are_you_sure <- function(x) {

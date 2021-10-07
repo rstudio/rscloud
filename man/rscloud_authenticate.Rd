@@ -8,14 +8,14 @@ rscloud_authenticate(force = FALSE)
 }
 \arguments{
 \item{force}{Whether to autheticate regardless of an existing access token;
-useful if one needs to change accounts during a session. Defaults to `FALSE`.}
+useful if one needs to change accounts during a session. Defaults to \code{FALSE}.}
 }
 \description{
 Authenticate to use the RStudio Cloud API. This function should normally not be called
-  by the user, as rscloud functions authenticate as needed automatically.
+by the user, as rscloud functions authenticate as needed automatically.
 }
 \details{
 The authentication function looks for credentials in the environment
-  variables `RSCLOUD_CLIENT_ID` and `RSCLOUD_CLIENT_SECRET`. These can be requested
-  from the RStudio Cloud team.
+variables \code{RSCLOUD_CLIENT_ID} and \code{RSCLOUD_CLIENT_SECRET}. These can be requested
+from the RStudio Cloud team.
 }
