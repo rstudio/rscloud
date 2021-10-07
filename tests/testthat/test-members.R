@@ -1,3 +1,4 @@
+# test space_member_add
 test_that("member adding, invitation rescinding", {
   email <- tolower("mine+test201@rstudio.com")
 

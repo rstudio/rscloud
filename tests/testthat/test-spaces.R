@@ -1,3 +1,4 @@
+# test rscloud_space_list
 test_that("space listing works", {
   library(dplyr)
   df <- rscloud_space_list() %>%
@@ -9,6 +10,7 @@ test_that("space listing works", {
   )
 })
 
+# test rscloud_space
 test_that("space consutructor works", {
   expect_error(test_space_id <- space_id(rscloud_space(name = "test-space-1")), NA)
   expect_error(rscloud_space(test_space_id), NA)

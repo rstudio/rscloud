@@ -1,3 +1,4 @@
+# test space_project_list
 test_that("project listing works", {
   space <- rscloud_space(name = "test-space-1")
 
