@@ -49,6 +49,8 @@ space_invitation_list <- function(space, filters = NULL) {
 #' @param invitations An invitation ID number or a data frame
 #'   of invitations returned by `space_invitation_list()`.
 #'
+#' @seealso [space_member_add()]
+#'
 #' @export
 invitation_send <- function(invitations) {
   UseMethod("invitation_send")

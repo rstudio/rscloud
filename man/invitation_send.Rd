@@ -21,3 +21,6 @@ Sends or resends invitation with a given invitation ID that was previously
 created in RStudio Cloud. Invitation IDs are unique across all spaces, hence
 this function does not also depend on a space ID.
 }
+\seealso{
+\code{\link[=space_member_add]{space_member_add()}}
+}
