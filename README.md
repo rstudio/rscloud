@@ -18,15 +18,19 @@ space.
 
 ## Getting started
 
-To get started, you’ll need to obtain credentials from the RStudio Cloud
-team and set the environment variables `RSCLOUD_CLIENT_ID` and
-`RSCLOUD_CLIENT_SECRET`. The recommended way to set these is by editing
-your `.Renviron` file. This can be easily done by calling the
-`usethis::edit_r_environ()` function. Your `.Renviron` file may look
-something like the following:
+To get started, you’ll need to obtain credentials and set the
+environment variables `RSCLOUD_CLIENT_ID` and `RSCLOUD_CLIENT_SECRET`.
+The recommended way to set these is by editing your `.Renviron` file.
+This can be done using the `usethis::edit_r_environ()` function. Your
+`.Renviron` file may look something like the following:
 
     RSCLOUD_CLIENT_ID=xxxxxxx
     RSCLOUD_CLIENT_SECRET=zzzzzzz
+
+To get your credentials log in to RStudio Cloud, click on your name/icon
+on the right side of the header, and choose “Credentials” from the user
+panel that appears. That will take you the RStudio User Settings
+application, where you can create credentials for use with rscloud.
 
 You can install the development version of rscloud as follows:
 
@@ -122,9 +126,9 @@ invitations
 #> # A tibble: 3 × 16
 #>   invitation_id space_id email   type   accepted expired redirect    accepted_by
 #>           <int>    <int> <chr>   <chr>  <lgl>    <lgl>   <chr>       <lgl>      
-#> 1        202197   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 2        202198   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
-#> 3        202199   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 1        203121   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 2        203122   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
+#> 3        203123   178750 mine+t… space… FALSE    FALSE   https://rs… NA         
 #> # … with 8 more variables: updated_time <dttm>, sender <list>,
 #> #   sso_enabled <lgl>, space_role <chr>, link <chr>, branding <chr>,
 #> #   created_time <dttm>, message <lgl>

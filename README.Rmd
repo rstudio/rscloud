@@ -25,12 +25,14 @@ API wrappers for the rstudio.cloud service.  The initial release includes APIs f
 
 ## Getting started
 
-To get started, you'll need to obtain credentials from the RStudio Cloud team and set the environment variables `RSCLOUD_CLIENT_ID` and `RSCLOUD_CLIENT_SECRET`. The recommended way to set these is by editing your `.Renviron` file. This can be easily done by calling the `usethis::edit_r_environ()` function. Your `.Renviron` file may look something like the following:
+To get started, you'll need to obtain credentials and set the environment variables `RSCLOUD_CLIENT_ID` and `RSCLOUD_CLIENT_SECRET`. The recommended way to set these is by editing your `.Renviron` file. This can be done using the `usethis::edit_r_environ()` function. Your `.Renviron` file may look something like the following:
 
 ```
 RSCLOUD_CLIENT_ID=xxxxxxx
 RSCLOUD_CLIENT_SECRET=zzzzzzz
 ```
+
+To get your credentials log in to RStudio Cloud, click on your name/icon on the right side of the header, and choose "Credentials" from the user panel that appears. That will take you the RStudio User Settings application, where you can create credentials for use with rscloud.
 
 You can install the development version of rscloud as follows:
 
