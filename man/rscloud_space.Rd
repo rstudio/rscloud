@@ -18,5 +18,7 @@ An \code{rscloud_space} object.
 Returns a space object given the space ID or the space name.
 }
 \details{
-Exactly one of \code{space_id} or \code{name} must be specified.
+Exactly one of \code{space_id} or \code{name} must be specified. This function
+is used to create an object that points to an existing space on RStudio Cloud,
+it does not create a new space.
 }

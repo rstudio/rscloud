@@ -58,7 +58,9 @@ parse_space_response <- function(response) {
 #' @param space_id The space ID.
 #' @param name The space name.
 #'
-#' @details Exactly one of `space_id` or `name` must be specified.
+#' @details Exactly one of `space_id` or `name` must be specified. This function
+#' is used to create an object that points to an existing space on RStudio Cloud,
+#' it does not create a new space.
 #'
 #' @return An `rscloud_space` object.
 #' @export
