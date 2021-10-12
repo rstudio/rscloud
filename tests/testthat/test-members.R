@@ -50,3 +50,22 @@ test_that("batch member adding/invitation rescinding", {
 
   expect_snapshot_output(print(space))
 })
+
+# test space_member_usage
+test_that("member usage, returns tibble with 14 columns", {
+
+  space <- rscloud_space(name = "test-space-1")
+
+  usages <- space_member_usage(space, filters = list(groupby = "user_id", from = "90d"))
+
+  expect_identical(
+    class(usages),
+    c("tbl_df", "tbl", "data.frame")
+  )
+
+  expect_identical(
+    ncol(usages),
+    14L
+  )
+
+})
