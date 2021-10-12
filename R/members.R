@@ -283,7 +283,8 @@ space_member_usage <- function(space, filters = NULL) {
   if ("groupby" %in% names(filters)) {
     response$results %>%
       tidy_list() %>%
-      tidyr::unnest_wider(summary) %>%
+      tidyr::unnest_longer(summary) %>%
+      tidyr::pivot_wider(names_from = summary_id, values_from = summary) %>%
       dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
       # rename to match output of space_member_list
       dplyr::rename(
