@@ -68,4 +68,9 @@ test_that("member usage, returns tibble with 14 columns", {
     14L
   )
 
+  expect_equal(
+    purrr::map_chr(vctrs::vec_ptype(usages), typeof),
+    purrr::map_chr(vctrs::vec_ptype(rscloud_ptypes$usages), typeof)
+  )
+
 })
