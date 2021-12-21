@@ -256,14 +256,18 @@ space_member_remove.data.frame <- function(space, users, remove_projects = NULL,
 #'
 #' Returns the list of members and their usage information for a given space.
 #' You must either be the admin of the space or your role must have permissions
-#' to see the members list.
+#' to see the members list. Result will include `last_activity` only if only
+#' if the time window is less than or equal to 31 days.
 #'
 #' @inheritParams space_info
 #' @inheritParams rscloud_space_list
 #'
 #' @examples
 #' \dontrun{
-#' # Usage in the last 90 days for each user
+#' # Usage in the last 30 days for each user, will report last_activity
+#' space_member_usage(space, filters = list(groupby = "user_id", from = "30d"))
+#'
+#' # Usage in the last 90 days for each user, will not report last_activity
 #' space_member_usage(space, filters = list(groupby = "user_id", from = "90d"))
 #' }
 #'
@@ -281,38 +285,63 @@ space_member_usage <- function(space, filters = NULL) {
   # tidy results
   # differently based on whether call was grouped by users or not
   if ("groupby" %in% names(filters)) {
-    response$results %>%
+    res <- response$results %>%
       tidy_list() %>%
       tidyr::unnest_longer(.data$summary) %>%
       tidyr::pivot_wider(names_from = .data$summary_id, values_from = .data$summary) %>%
-      dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
       # rename to match output of space_member_list
       dplyr::rename(
         display_name = .data$user_display_name,
         first_name = .data$user_first_name,
         last_name = .data$user_last_name
       ) %>%
-      # reorder columns to roughly match output of space_member_list
-      dplyr::select(
-        .data$user_id, .data$display_name, .data$first_name,
-        .data$last_name, .data$last_activity, .data$compute,
-        dplyr::starts_with("active"), dplyr::everything()
-      ) %>%
-      # capture from and until dates of API call
       dplyr::mutate(
+        # capture from and until dates of API call
         from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
-        until = as.POSIXct(response$until / 1000, origin = "1970-01-01")
+        until = as.POSIXct(response$until / 1000, origin = "1970-01-01"),
+        # make active_ variables integer
+        dplyr::across(.cols = dplyr::contains("active_"), as.integer)
       )
+
+    # last_activity is only reported if the time window is less than or equal to 31 days
+    if("last_activity" %in% names(res)){
+      res %>%
+        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
+        # reorder columns to roughly match output of space_member_list
+        dplyr::select(
+          .data$user_id, .data$display_name, .data$first_name,
+          .data$last_name, .data$last_activity, .data$compute,
+          dplyr::starts_with("active"), dplyr::everything()
+        )
+    } else {
+      res %>%
+        # reorder columns to roughly match output of space_member_list
+        dplyr::select(
+          .data$user_id, .data$display_name, .data$first_name,
+          .data$last_name, .data$compute,
+          dplyr::starts_with("active"), dplyr::everything()
+        )
+    }
+
   } else {
-    response$results %>%
+    res <- response$results %>%
       tibble::enframe() %>%
       tidyr::unnest(.data$value, keep_empty = TRUE) %>%
       tidyr::pivot_wider(names_from = .data$name, values_from = .data$value) %>%
-      dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
-      # capture from and until dates of API call
       dplyr::mutate(
+        # capture from and until dates of API call
         from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
-        until = as.POSIXct(response$until / 1000, origin = "1970-01-01")
+        until = as.POSIXct(response$until / 1000, origin = "1970-01-01"),
+        # make active_ variables integer
+        dplyr::across(.cols = dplyr::contains("active_"), as.integer)
       )
+
+    # last_activity is only reported if the time window is less than or equal to 31 days
+    if("last_activity" %in% names(res)){
+      res %>%
+        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01"))
+    } else{
+      res
+    }
   }
 }
