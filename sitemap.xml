@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://rstudio.github.io/rscloud/404.html</loc>
+  </url>
+  <url>
+    <loc>https://rstudio.github.io/rscloud/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://rstudio.github.io/rscloud/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://rstudio.github.io/rscloud/authors.html</loc>
+  </url>
+  <url>
     <loc>https://rstudio.github.io/rscloud/index.html</loc>
+  </url>
+  <url>
+    <loc>https://rstudio.github.io/rscloud/reference/index.html</loc>
   </url>
   <url>
     <loc>https://rstudio.github.io/rscloud/reference/invitation_rescind.html</loc>

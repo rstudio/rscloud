@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,25 +34,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">rscloud</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9002</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/rstudio/rscloud/">
+  <a href="https://github.com/rstudio/rscloud/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -67,26 +63,26 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="rscloud" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#rscloud" class="anchor"></a>rscloud</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="rscloud">rscloud<a class="anchor" aria-label="anchor" href="#rscloud"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>API wrappers for the rstudio.cloud service. The initial release includes APIs for managing space memberships, and listing projects within a space.</p>
-<div id="getting-started" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting started</h2>
-<p>To get started, you’ll need to obtain credentials and set the environment variables <code>RSCLOUD_CLIENT_ID</code> and <code>RSCLOUD_CLIENT_SECRET</code>. The recommended way to set these is by editing your <code>.Renviron</code> file. This can be done using the <code><a href="https://usethis.r-lib.org/reference/edit.html">usethis::edit_r_environ()</a></code> function. Your <code>.Renviron</code> file may look something like the following:</p>
+<div class="section level2">
+<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
+<p>To get started, you’ll need to obtain credentials and set the environment variables <code>RSCLOUD_CLIENT_ID</code> and <code>RSCLOUD_CLIENT_SECRET</code>. The recommended way to set these is by editing your <code>.Renviron</code> file. This can be done using the <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code> function. Your <code>.Renviron</code> file may look something like the following:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>RSCLOUD_CLIENT_ID=xxxxxxx</span>
 <span id="cb1-2"><a href="#cb1-2"></a>RSCLOUD_CLIENT_SECRET=zzzzzzz</span></code></pre></div>
 <p>To get your credentials log in to RStudio Cloud, click on your name/icon on the right side of the header, and choose “Credentials” from the user panel that appears. That will take you the RStudio User Settings application, where you can create credentials for use with rscloud.</p>
 <p>You can install the development version of rscloud as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"rstudio/rscloud"</span><span class="op">)</span></code></pre></div>
 <p>The entry point to most of the functionality is a <em>space</em>. To see the list of spaces you have access to, you can use the <code><a href="reference/rscloud_space_list.html">rscloud_space_list()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rscloud">rscloud</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/rscloud" class="external-link">rscloud</a></span><span class="op">)</span>
 <span class="fu"><a href="reference/rscloud_space_list.html">rscloud_space_list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 × 17</span>
 <span class="co">#&gt;   space_id name         description project_count user_count account_id project_max</span>
@@ -107,7 +103,7 @@
 <span class="co">#&gt;   users: 1 | projects: 2</span></code></pre></div>
 <p>Adding members to a space can be done via <code><a href="reference/space_member_add.html">space_member_add()</a></code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">space</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">space</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="reference/space_member_add.html">space_member_add</a></span><span class="op">(</span><span class="st">"mine+test1@rstudio.com"</span><span class="op">)</span>
 
 <span class="va">space</span>
@@ -116,7 +112,7 @@
 <span class="co">#&gt;   users: 2 | projects: 2</span></code></pre></div>
 <p>You can get a tidy data frame of space members with <code><a href="reference/space_member_list.html">space_member_list()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">space</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">space</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="reference/space_member_list.html">space_member_list</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 × 22</span>
 <span class="co">#&gt;   user_id display_name  email  updated_time        created_time        last_name</span>
@@ -129,13 +125,13 @@
 <span class="co">#&gt; #   local_auth &lt;lgl&gt;, organization &lt;chr&gt;, referral &lt;lgl&gt;</span></code></pre></div>
 <p>You can also provide a data frame of user information, which can be useful when working with spreadsheets of class rosters:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">roster</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">roster</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">user_email</span>,
   <span class="st">"mine+test2@rstudio.com"</span>, 
   <span class="st">"mine+test3@rstudio.com"</span>
 <span class="op">)</span>
 
-<span class="va">space</span> <span class="op">%&gt;%</span> 
+<span class="va">space</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="reference/space_member_add.html">space_member_add</a></span><span class="op">(</span><span class="va">roster</span><span class="op">)</span>
 
 <span class="va">space</span>
@@ -144,7 +140,7 @@
 <span class="co">#&gt;   users: 4 | projects: 2</span></code></pre></div>
 <p>You can also work with outstanding invitations:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">invitations</span> <span class="op">&lt;-</span> <span class="va">space</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">invitations</span> <span class="op">&lt;-</span> <span class="va">space</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="reference/space_invitation_list.html">space_invitation_list</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">invitations</span>
@@ -159,7 +155,7 @@
 <span class="co">#&gt; #   created_time &lt;dttm&gt;, message &lt;lgl&gt;</span></code></pre></div>
 <p>To resend invitations, use the <code><a href="reference/invitation_send.html">invitation_send()</a></code> function:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">invitations</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">invitations</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="co"># filter(...) %&gt;% </span>
   <span class="fu"><a href="reference/invitation_send.html">invitation_send</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
@@ -168,49 +164,60 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/rstudio/rscloud/">https://​github.com/​rstudio/​rscloud/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/rstudio/rscloud/issues">https://​github.com/​rstudio/​rscloud/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Tareef Kawaf <br><small class="roles"> Author </small>  </li>
-<li>Mine Çetinkaya-Rundel <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6452-2420" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>
-<a href="https://www.rstudio.com"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" height="24"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
+<li><a href="https://github.com/rstudio/rscloud/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/rstudio/rscloud/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://codecov.io/gh/rstudio/rscloud?branch=master"><img src="https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://github.com/rstudio/rscloud/actions"><img src="https://github.com/rstudio/rscloud/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing rscloud</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Tareef Kawaf <br><small class="roles"> Author </small>  </li>
+<li>Mine Çetinkaya-Rundel <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6452-2420" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://codecov.io/gh/rstudio/rscloud?branch=master" class="external-link"><img src="https://codecov.io/gh/rstudio/rscloud/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://github.com/rstudio/rscloud/actions" class="external-link"><img src="https://github.com/rstudio/rscloud/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Tareef Kawaf, Mine Çetinkaya-Rundel, <a href="https://www.rstudio.com"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" height="24"></a>.</p>
+  <p></p>
+<p>Developed by Tareef Kawaf, Mine Çetinkaya-Rundel, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -218,6 +225,8 @@
 
   
 
+
+  
 
   </body>
 </html>
