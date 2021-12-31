@@ -52,7 +52,7 @@ test_that("batch member adding/invitation rescinding", {
 })
 
 # test space_member_usage
-test_that("member usage for 90 days, returns tibble with 13 columns", {
+test_that("member usage for 90 days, returns tibble with 14 columns", {
 
   space <- rscloud_space(name = "test-space-1")
 
@@ -65,12 +65,12 @@ test_that("member usage for 90 days, returns tibble with 13 columns", {
 
   expect_identical(
     ncol(usages),
-    13L
+    14L
   )
 
   expect_equal(
     purrr::map_chr(vctrs::vec_ptype(usages), typeof),
-    purrr::map_chr(vctrs::vec_ptype(rscloud_ptypes_90$usages), typeof)
+    purrr::map_chr(vctrs::vec_ptype(rscloud_ptypes$usages), typeof)
   )
 
 })
@@ -93,7 +93,7 @@ test_that("member usage for 30 days, returns tibble with 14 columns", {
 
   expect_equal(
     purrr::map_chr(vctrs::vec_ptype(usages), typeof),
-    purrr::map_chr(vctrs::vec_ptype(rscloud_ptypes_30$usages), typeof)
+    purrr::map_chr(vctrs::vec_ptype(rscloud_ptypes$usages), typeof)
   )
 
 })

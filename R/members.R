@@ -256,8 +256,10 @@ space_member_remove.data.frame <- function(space, users, remove_projects = NULL,
 #'
 #' Returns the list of members and their usage information for a given space.
 #' You must either be the admin of the space or your role must have permissions
-#' to see the members list. Result will include `last_activity` only if only
-#' if the time window is less than or equal to 31 days.
+#' to see the members list. Result will include true `last_activity` (date user
+#' was last active) only if only if the time window is less than or equal to 31
+#' days. For longer time periods `last_activity` for all users will be reported
+#' as `NA` regardless of the true date of their last activity.
 #'
 #' @inheritParams space_info
 #' @inheritParams rscloud_space_list
@@ -303,25 +305,27 @@ space_member_usage <- function(space, filters = NULL) {
         dplyr::across(.cols = dplyr::contains("active_"), as.integer)
       )
 
-    # last_activity is only reported if the time window is less than or equal to 31 days
+    # true last_activity is only reported if the time window is less than or equal to 31 days
+    # else last_activity is NA
     if("last_activity" %in% names(res)){
-      res %>%
-        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01")) %>%
-        # reorder columns to roughly match output of space_member_list
-        dplyr::select(
-          .data$user_id, .data$display_name, .data$first_name,
-          .data$last_name, .data$last_activity, .data$compute,
-          dplyr::starts_with("active"), dplyr::everything()
-        )
+      res <- res %>%
+        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01"))
     } else {
-      res %>%
-        # reorder columns to roughly match output of space_member_list
-        dplyr::select(
-          .data$user_id, .data$display_name, .data$first_name,
-          .data$last_name, .data$compute,
-          dplyr::starts_with("active"), dplyr::everything()
-        )
+      warning("Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days.")
+      res <- res %>%
+        dplyr::mutate(last_activity = as.POSIXct(NA, origin = "1970-01-01"))
     }
+
+    res %>%
+      # reorder columns to roughly match output of space_member_list
+      dplyr::select(
+        .data$user_id, .data$display_name, .data$first_name,
+        .data$last_name, .data$last_activity, .data$compute,
+        dplyr::starts_with("active"), dplyr::everything()
+      ) %>%
+      # change type of compute to double
+      dplyr::mutate(compute = as.double(.data$compute))
+
 
   } else {
     res <- response$results %>%
@@ -336,12 +340,19 @@ space_member_usage <- function(space, filters = NULL) {
         dplyr::across(.cols = dplyr::contains("active_"), as.integer)
       )
 
-    # last_activity is only reported if the time window is less than or equal to 31 days
+    # true last_activity is only reported if the time window is less than or equal to 31 days
+    # else last_activity is NA
     if("last_activity" %in% names(res)){
-      res %>%
+      res <- res %>%
         dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01"))
     } else{
-      res
+      warning("Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days.")
+      res <- res %>%
+        dplyr::mutate(last_activity = as.POSIXct(NA, origin = "1970-01-01"))
     }
+
+    # change type of compute to double
+    res %>%
+      dplyr::mutate(compute = as.double(.data$compute))
   }
 }
