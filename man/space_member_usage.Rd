@@ -14,11 +14,17 @@ space_member_usage(space, filters = NULL)
 \description{
 Returns the list of members and their usage information for a given space.
 You must either be the admin of the space or your role must have permissions
-to see the members list.
+to see the members list. Result will include true \code{last_activity} (date user
+was last active) only if only if the time window is less than or equal to 31
+days. For longer time periods \code{last_activity} for all users will be reported
+as \code{NA} regardless of the true date of their last activity.
 }
 \examples{
 \dontrun{
-# Usage in the last 90 days for each user
+# Usage in the last 30 days for each user, will report last_activity
+space_member_usage(space, filters = list(groupby = "user_id", from = "30d"))
+
+# Usage in the last 90 days for each user, will not report last_activity
 space_member_usage(space, filters = list(groupby = "user_id", from = "90d"))
 }
 
