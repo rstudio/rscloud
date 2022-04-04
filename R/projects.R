@@ -13,7 +13,8 @@ space_project_list <- function(space, filters = NULL) {
     append(list("filter" = paste0("space_id:", space_id))) %>%
     purrr::flatten()
 
-  response <- rscloud_rest("projects",
+  space_project_list_url = paste0("/spaces", space_id, "/content/projects")
+  response <- rscloud_rest(space_project_list_url,
     query = query_list
   )
 

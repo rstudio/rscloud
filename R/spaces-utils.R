@@ -11,7 +11,7 @@ RSCloudSpace <- R6::R6Class("RSCloudSpace",
         glue::glue(
           "RStudio Cloud Space (ID: {private$id})
         <{info$name}>
-          users: {info$user_count} | projects: {info$project_count}
+          users: {info$user_count} | projects: {info$content_count}
         "
         )
       } else {
