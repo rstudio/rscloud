@@ -15,12 +15,12 @@ space_project_list <- function(space, filters = NULL) {
     purrr::flatten()
 
   response <- rscloud_rest(space_project_list_url,
-                           query = query_list
+    query = query_list
   )
 
   verify_response_length(response, "projects", filters)
 
-  projects <- collect_paginated(response, path = space_project_list_url, query = query_list)
+  projects <- collect_paginated(response, path = space_project_list_url, collection = 'projects', query = query_list)
 
   projects %>%
     tidy_list() %>%
