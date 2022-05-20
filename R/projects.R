@@ -8,18 +8,19 @@
 #' @export
 space_project_list <- function(space, filters = NULL) {
   space_id <- space_id(space)
+  space_project_list_url <- paste0("/spaces/", space_id, "/content/projects")
+
   query_list <- filters %>%
     purrr::map(~ list("filter" = .x)) %>%
-    append(list("filter" = paste0("space_id:", space_id))) %>%
     purrr::flatten()
 
-  response <- rscloud_rest("projects",
+  response <- rscloud_rest(space_project_list_url,
     query = query_list
   )
 
   verify_response_length(response, "projects", filters)
 
-  projects <- collect_paginated(response, path = "projects", query = query_list)
+  projects <- collect_paginated(response, path = space_project_list_url, collection = 'projects', query = query_list)
 
   projects %>%
     tidy_list() %>%
