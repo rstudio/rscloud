@@ -157,25 +157,27 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @inheritParams space_info
 #' @param users ID number or email of the user to be removed, or a data frame
 #'   with either a `user_id` or `email` column.
-#' @param remove_projects Whether to remove user's projects from the workspace
-#'   and move them to their personal space or to keep the projects in the
-#'   workspace.
+#' @param content_action What to do with the users content after they are
+#'   removed from the space. Options for the content are to: `leave_in_space`
+#'   leaving the content where it is, `archive_in_space` moving the content to
+#'   the space archive, and `trash_in_space` moving the content to the spaces
+#'   trash.
 #' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space, users, remove_projects = NULL, ask = TRUE) {
+space_member_remove <- function(space, users, content_action=NULL, ask = TRUE) {
   UseMethod("space_member_remove", users)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.numeric <- function(space, users, remove_projects = NULL, ask = TRUE) {
+space_member_remove.numeric <- function(space, users, content_action = NULL, ask = TRUE) {
   if (!rlang::is_scalar_integerish(users)) {
     usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
   }
 
-  if (rlang::is_null(remove_projects)) {
-    usethis::ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
+  if (rlang::is_null(content_action)) {
+    usethis::ui_stop("{ui_field('content_action')} must be either `leave_in_space`, `archive_in_space`, `trash_in_space`.")
   }
 
   if (ask) {
@@ -189,12 +191,12 @@ space_member_remove.numeric <- function(space, users, remove_projects = NULL, as
 
   space_id <- space_id(space)
 
-  remove_projects_value <- tolower(as.character(remove_projects))
+  content_action <- tolower(as.character(content_action))
 
   req <- rscloud_rest(
     path = c("spaces", space_id, "members", users),
     verb = "DELETE",
-    query = list(remove_projects = remove_projects_value)
+    query = list(content_action = content_action)
   )
 
   usethis::ui_done("Removed member with {ui_field('user_id')} {ui_value(users)}.")
@@ -204,7 +206,7 @@ space_member_remove.numeric <- function(space, users, remove_projects = NULL, as
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.character <- function(space, users, remove_projects = NULL, ask = TRUE) {
+space_member_remove.character <- function(space, users, content_action = NULL, ask = TRUE) {
   if (!is_valid_email(users)) {
     usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
   }
@@ -215,16 +217,16 @@ space_member_remove.character <- function(space, users, remove_projects = NULL, 
 
   space_member_remove(space,
     users = id_to_remove,
-    remove_projects = remove_projects,
+    content_action = content_action,
     ask = ask
   )
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.data.frame <- function(space, users, remove_projects = NULL, ask = TRUE) {
-  if (rlang::is_null(remove_projects)) {
-    usethis::ui_stop("{ui_field('remove_projects')} must be {ui_value(TRUE)} or {ui_value(FALSE)}. If {ui_value(TRUE)} user's projects are moved to their personal space. If {ui_value(FALSE)}, user's projects are left in the workspace.")
+space_member_remove.data.frame <- function(space, users, content_action = NULL, ask = TRUE) {
+  if (rlang::is_null(content_action)) {
+    usethis::ui_stop("{ui_field('content_action')} must be either `leave_in_space`, `archive_in_space`, `trash_in_space`.")
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
@@ -248,7 +250,7 @@ space_member_remove.data.frame <- function(space, users, remove_projects = NULL,
     }
   }
 
-  purrr::walk(users, space_member_remove, space = space, remove_projects = remove_projects, ask = FALSE)
+  purrr::walk(users, space_member_remove, space = space, content_action = content_action, ask = FALSE)
   invisible(space)
 }
 

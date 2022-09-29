@@ -7,13 +7,13 @@
 \alias{space_member_remove.data.frame}
 \title{Remove Members}
 \usage{
-space_member_remove(space, users, remove_projects = NULL, ask = TRUE)
+space_member_remove(space, users, content_action = NULL, ask = TRUE)
 
-\method{space_member_remove}{numeric}(space, users, remove_projects = NULL, ask = TRUE)
+\method{space_member_remove}{numeric}(space, users, content_action = NULL, ask = TRUE)
 
-\method{space_member_remove}{character}(space, users, remove_projects = NULL, ask = TRUE)
+\method{space_member_remove}{character}(space, users, content_action = NULL, ask = TRUE)
 
-\method{space_member_remove}{data.frame}(space, users, remove_projects = NULL, ask = TRUE)
+\method{space_member_remove}{data.frame}(space, users, content_action = NULL, ask = TRUE)
 }
 \arguments{
 \item{space}{A space object created using \code{rscloud_space()}.}
@@ -21,9 +21,11 @@ space_member_remove(space, users, remove_projects = NULL, ask = TRUE)
 \item{users}{ID number or email of the user to be removed, or a data frame
 with either a \code{user_id} or \code{email} column.}
 
-\item{remove_projects}{Whether to remove user's projects from the workspace
-and move them to their personal space or to keep the projects in the
-workspace.}
+\item{content_action}{What to do with the users content after they are
+removed from the space. Options for the content are to: \code{leave_in_space}
+leaving the content where it is, \code{archive_in_space} moving the content to
+the space archive, and \code{trash_in_space} moving the content to the spaces
+trash.}
 
 \item{ask}{Whether to ask user for confirmation of deletion.}
 }
