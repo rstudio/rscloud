@@ -165,7 +165,7 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space, users, content_action=NULL, ask = TRUE) {
+space_member_remove <- function(space, users, content_action = NULL, ask = TRUE) {
   UseMethod("space_member_remove", users)
 }
 
