@@ -158,9 +158,9 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @param users ID number or email of the user to be removed, or a data frame
 #'   with either a `user_id` or `email` column.
 #' @param content_action What to do with the users content after they are
-#'   removed from the space. Options for the content are to: `leave_in_space`
-#'   leaving the content where it is, `archive_in_space` moving the content to
-#'   the space archive, and `trash_in_space` moving the content to the spaces
+#'   removed from the space. Options for the content are to: "leave"
+#'   leaving the content where it is, "archive" moving the content to
+#'   the space archive, and "trash" moving the content to the spaces
 #'   trash.
 #' @param ask Whether to ask user for confirmation of deletion.
 #'
@@ -177,7 +177,7 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
   }
 
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either `leave_in_space`, `archive_in_space`, `trash_in_space`.")
+    usethis::ui_stop("{ui_field('content_action')} must be either \"leave\", \"archive\", \"trash\".")
   }
 
   if (ask) {
@@ -191,7 +191,7 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
 
   space_id <- space_id(space)
 
-  content_action <- tolower(as.character(content_action))
+  content_action <- as.character(content_action)
 
   req <- rscloud_rest(
     path = c("spaces", space_id, "members", users),
@@ -226,7 +226,7 @@ space_member_remove.character <- function(space, users, content_action = NULL, a
 #' @export
 space_member_remove.data.frame <- function(space, users, content_action = NULL, ask = TRUE) {
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either `leave_in_space`, `archive_in_space`, `trash_in_space`.")
+    usethis::ui_stop("{ui_field('content_action')} must be either \"leave\", \"archive\", \"trash\".")
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {

@@ -22,9 +22,9 @@ space_member_remove(space, users, content_action = NULL, ask = TRUE)
 with either a \code{user_id} or \code{email} column.}
 
 \item{content_action}{What to do with the users content after they are
-removed from the space. Options for the content are to: \code{leave_in_space}
-leaving the content where it is, \code{archive_in_space} moving the content to
-the space archive, and \code{trash_in_space} moving the content to the spaces
+removed from the space. Options for the content are to: "leave"
+leaving the content where it is, "archive" moving the content to
+the space archive, and "trash" moving the content to the spaces
 trash.}
 
 \item{ask}{Whether to ask user for confirmation of deletion.}
