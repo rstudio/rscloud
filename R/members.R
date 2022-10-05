@@ -177,7 +177,7 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
   }
 
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"leave\", \"archive\", \"trash\".")
+    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
   }
 
   if (ask) {
@@ -192,6 +192,10 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
   space_id <- space_id(space)
 
   content_action <- as.character(content_action)
+
+  if (identical(content_action, 'keep')) {
+    content_action = 'leave'
+  }
 
   req <- rscloud_rest(
     path = c("spaces", space_id, "members", users),
@@ -226,7 +230,7 @@ space_member_remove.character <- function(space, users, content_action = NULL, a
 #' @export
 space_member_remove.data.frame <- function(space, users, content_action = NULL, ask = TRUE) {
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"leave\", \"archive\", \"trash\".")
+    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
