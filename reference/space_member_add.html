@@ -50,36 +50,47 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">space_member_add</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for character</span>
-<span class="fu">space_member_add</span><span class="op">(</span>
-  <span class="va">space</span>,
-  <span class="va">users</span>,
-  email_invite <span class="op">=</span> <span class="cn">TRUE</span>,
-  email_message <span class="op">=</span> <span class="cn">NULL</span>,
-  space_role <span class="op">=</span> <span class="st">"contributor"</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">space_member_add</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">space_member_add</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for character</span></span>
+<span><span class="fu">space_member_add</span><span class="op">(</span></span>
+<span>  <span class="va">space</span>,</span>
+<span>  <span class="va">users</span>,</span>
+<span>  email_invite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  email_message <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  space_role <span class="op">=</span> <span class="st">"contributor"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">space_member_add</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>space</dt>
 <dd><p>A space object created using <code><a href="rscloud_space.html">rscloud_space()</a></code>.</p></dd>
+
+
 <dt>users</dt>
 <dd><p>Email address of the user to add or a data frame of user information.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments.</p></dd>
+
+
 <dt>email_invite</dt>
 <dd><p>Indicates whether an email should be sent to the user with the invite, <code>TRUE</code> by default</p></dd>
+
+
 <dt>email_message</dt>
 <dd><p>Message to be sent to the user should the <code>email_invite</code> flag be set to <code>TRUE</code></p></dd>
+
+
 <dt>space_role</dt>
 <dd><p>Desired role for the user in the space</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -101,7 +112,7 @@ will take precendence and a message printed.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

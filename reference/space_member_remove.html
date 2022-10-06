@@ -50,31 +50,40 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, remove_projects <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for numeric</span>
-<span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, remove_projects <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for character</span>
-<span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, remove_projects <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, remove_projects <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, content_action <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for numeric</span></span>
+<span><span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, content_action <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for character</span></span>
+<span><span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, content_action <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">space_member_remove</span><span class="op">(</span><span class="va">space</span>, <span class="va">users</span>, content_action <span class="op">=</span> <span class="cn">NULL</span>, ask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>space</dt>
 <dd><p>A space object created using <code><a href="rscloud_space.html">rscloud_space()</a></code>.</p></dd>
+
+
 <dt>users</dt>
 <dd><p>ID number or email of the user to be removed, or a data frame
 with either a <code>user_id</code> or <code>email</code> column.</p></dd>
-<dt>remove_projects</dt>
-<dd><p>Whether to remove user's projects from the workspace
-and move them to their personal space or to keep the projects in the
-workspace.</p></dd>
+
+
+<dt>content_action</dt>
+<dd><p>What to do with the users content after they are
+removed from the space. Options for the content are to: "leave"
+leaving the content where it is, "archive" moving the content to
+the space archive, and "trash" moving the content to the spaces
+trash.</p></dd>
+
+
 <dt>ask</dt>
 <dd><p>Whether to ask user for confirmation of deletion.</p></dd>
+
 </dl></div>
 
   </div>
@@ -89,7 +98,7 @@ workspace.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
