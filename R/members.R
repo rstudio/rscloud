@@ -173,11 +173,11 @@ space_member_remove <- function(space, users, content_action = NULL, ask = TRUE)
 #' @export
 space_member_remove.numeric <- function(space, users, content_action = NULL, ask = TRUE) {
   if (!rlang::is_scalar_integerish(users)) {
-    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+    usethis::ui_stop("{usethis::ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
   }
 
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
+    usethis::ui_stop("{usethis::ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
   }
 
   if (ask) {
@@ -203,7 +203,7 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
     query = list(content_action = content_action)
   )
 
-  usethis::ui_done("Removed member with {ui_field('user_id')} {ui_value(users)}.")
+  usethis::ui_done("Removed member with {usethis::ui_field('user_id')} {usethis::ui_value(users)}.")
 
   invisible(space)
 }
@@ -212,7 +212,7 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
 #' @export
 space_member_remove.character <- function(space, users, content_action = NULL, ask = TRUE) {
   if (!is_valid_email(users)) {
-    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+    usethis::ui_stop("{usethis::ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
   }
 
   id_to_remove <- space %>%
@@ -230,7 +230,7 @@ space_member_remove.character <- function(space, users, content_action = NULL, a
 #' @export
 space_member_remove.data.frame <- function(space, users, content_action = NULL, ask = TRUE) {
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
+    usethis::ui_stop("{usethis::ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
