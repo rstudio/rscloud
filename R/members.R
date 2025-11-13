@@ -21,7 +21,8 @@ space_member_list <- function(space, filters = NULL) {
 
   verify_response_length(response, "users", filters)
 
-  users <- collect_paginated(response,
+  users <- collect_paginated(
+    response,
     path = c("spaces", space_id, "members"),
     collection = "users",
     query = query_list
@@ -34,10 +35,12 @@ space_member_list <- function(space, filters = NULL) {
     ) %>%
     parse_times() %>%
     dplyr::select(
-      user_id = .data$id, .data$display_name,
+      user_id = .data$id,
+      .data$display_name,
       .data$email,
       .data$updated_time,
-      .data$created_time, dplyr::everything()
+      .data$created_time,
+      dplyr::everything()
     )
 }
 
@@ -64,10 +67,14 @@ space_member_add <- function(space, users, ...) {
 #' @param email_message Message to be sent to the user should the `email_invite` flag be set to `TRUE`
 #' @param space_role Desired role for the user in the space
 #' @export
-space_member_add.character <- function(space, users,
-                                       email_invite = TRUE,
-                                       email_message = NULL,
-                                       space_role = "contributor", ...) {
+space_member_add.character <- function(
+  space,
+  users,
+  email_invite = TRUE,
+  email_message = NULL,
+  space_role = "contributor",
+  ...
+) {
   if (!rlang::is_scalar_character(users)) {
     stop(
       "`users` must be a single email address. For adding multiple users please pass a data frame.",
@@ -80,13 +87,22 @@ space_member_add.character <- function(space, users,
   space_id <- space_id(space)
 
   if (!space_role %in% roles$role) {
-    stop(paste0("Role: ", space_role, " isn't a valid role for space: ", space_id))
+    stop(paste0(
+      "Role: ",
+      space_role,
+      " isn't a valid role for space: ",
+      space_id
+    ))
   }
 
   user <- list(email = users, space_role = space_role)
 
   if (email_invite) {
-    user <- c(user, invite_email = email_invite, invite_email_message = email_message)
+    user <- c(
+      user,
+      invite_email = email_invite,
+      invite_email_message = email_message
+    )
   }
 
   req <- rscloud_rest(
@@ -103,9 +119,8 @@ space_member_add.character <- function(space, users,
 space_member_add.data.frame <- function(space, users, ...) {
   dots <- rlang::dots_list(...)
 
-  user_email <- users[["user_email"]] %||% stop("`users` must contain a 'user_email' column.",
-    call. = FALSE
-  )
+  user_email <- users[["user_email"]] %||%
+    stop("`users` must contain a 'user_email' column.", call. = FALSE)
 
   # TODO: refactor via function
   overrides <- character()
@@ -132,9 +147,11 @@ space_member_add.data.frame <- function(space, users, ...) {
   }
 
   if (length(overrides)) {
-    message(glue::glue("
+    message(glue::glue(
+      "
          Using the following overrides:
-           {paste(overrides, purrr::map_chr(overrides, ~ dots[[.x]]), sep = ': ')}"))
+           {paste(overrides, purrr::map_chr(overrides, ~ dots[[.x]]), sep = ': ')}"
+    ))
   }
 
   suppressWarnings({
@@ -165,19 +182,33 @@ space_member_add.data.frame <- function(space, users, ...) {
 #' @param ask Whether to ask user for confirmation of deletion.
 #'
 #' @export
-space_member_remove <- function(space, users, content_action = NULL, ask = TRUE) {
+space_member_remove <- function(
+  space,
+  users,
+  content_action = NULL,
+  ask = TRUE
+) {
   UseMethod("space_member_remove", users)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.numeric <- function(space, users, content_action = NULL, ask = TRUE) {
+space_member_remove.numeric <- function(
+  space,
+  users,
+  content_action = NULL,
+  ask = TRUE
+) {
   if (!rlang::is_scalar_integerish(users)) {
-    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+    usethis::ui_stop(
+      "{usethis::ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame."
+    )
   }
 
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
+    usethis::ui_stop(
+      "{usethis::ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\"."
+    )
   }
 
   if (ask) {
@@ -203,23 +234,33 @@ space_member_remove.numeric <- function(space, users, content_action = NULL, ask
     query = list(content_action = content_action)
   )
 
-  usethis::ui_done("Removed member with {ui_field('user_id')} {ui_value(users)}.")
+  usethis::ui_done(
+    "Removed member with {usethis::ui_field('user_id')} {usethis::ui_value(users)}."
+  )
 
   invisible(space)
 }
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.character <- function(space, users, content_action = NULL, ask = TRUE) {
+space_member_remove.character <- function(
+  space,
+  users,
+  content_action = NULL,
+  ask = TRUE
+) {
   if (!is_valid_email(users)) {
-    usethis::ui_stop("{ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame.")
+    usethis::ui_stop(
+      "{usethis::ui_field('users')} must be a single user ID or email. For removing multiple users please pass a data frame."
+    )
   }
 
   id_to_remove <- space %>%
     space_member_list(filters = glue::glue("email:{tolower(users)}")) %>%
     dplyr::pull(.data$user_id)
 
-  space_member_remove(space,
+  space_member_remove(
+    space,
     users = id_to_remove,
     content_action = content_action,
     ask = ask
@@ -228,9 +269,16 @@ space_member_remove.character <- function(space, users, content_action = NULL, a
 
 #' @rdname space_member_remove
 #' @export
-space_member_remove.data.frame <- function(space, users, content_action = NULL, ask = TRUE) {
+space_member_remove.data.frame <- function(
+  space,
+  users,
+  content_action = NULL,
+  ask = TRUE
+) {
   if (rlang::is_null(content_action)) {
-    usethis::ui_stop("{ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\".")
+    usethis::ui_stop(
+      "{usethis::ui_field('content_action')} must be either \"keep\", \"archive\", \"trash\"."
+    )
   }
 
   users <- if (!is.null(user_id <- users[["user_id"]])) {
@@ -240,9 +288,7 @@ space_member_remove.data.frame <- function(space, users, content_action = NULL, 
     message("Using `email` column.")
     email
   } else {
-    stop("`users` must contain a `user_id` or `email` column.",
-      call. = FALSE
-    )
+    stop("`users` must contain a `user_id` or `email` column.", call. = FALSE)
   }
 
   if (ask) {
@@ -254,7 +300,13 @@ space_member_remove.data.frame <- function(space, users, content_action = NULL, 
     }
   }
 
-  purrr::walk(users, space_member_remove, space = space, content_action = content_action, ask = FALSE)
+  purrr::walk(
+    users,
+    space_member_remove,
+    space = space,
+    content_action = content_action,
+    ask = FALSE
+  )
   invisible(space)
 }
 
@@ -296,7 +348,10 @@ space_member_usage <- function(space, filters = NULL) {
     res <- response$results %>%
       tidy_list() %>%
       tidyr::unnest_longer(.data$summary) %>%
-      tidyr::pivot_wider(names_from = .data$summary_id, values_from = .data$summary) %>%
+      tidyr::pivot_wider(
+        names_from = .data$summary_id,
+        values_from = .data$summary
+      ) %>%
       # rename to match output of space_member_list
       dplyr::rename(
         display_name = .data$user_display_name,
@@ -305,7 +360,7 @@ space_member_usage <- function(space, filters = NULL) {
       ) %>%
       dplyr::mutate(
         # capture from and until dates of API call
-        from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
+        from = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
         until = as.POSIXct(response$until / 1000, origin = "1970-01-01"),
         # make active_ variables integer
         dplyr::across(.cols = dplyr::contains("active_"), as.integer)
@@ -313,11 +368,18 @@ space_member_usage <- function(space, filters = NULL) {
 
     # true last_activity is only reported if the time window is less than or equal to 31 days
     # else last_activity is NA
-    if("last_activity" %in% names(res)){
+    if ("last_activity" %in% names(res)) {
       res <- res %>%
-        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01"))
+        dplyr::mutate(
+          last_activity = as.POSIXct(
+            .data$last_activity / 1000,
+            origin = "1970-01-01"
+          )
+        )
     } else {
-      warning("Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days.")
+      warning(
+        "Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days."
+      )
       res <- res %>%
         dplyr::mutate(last_activity = as.POSIXct(NA, origin = "1970-01-01"))
     }
@@ -325,14 +387,17 @@ space_member_usage <- function(space, filters = NULL) {
     res %>%
       # reorder columns to roughly match output of space_member_list
       dplyr::select(
-        .data$user_id, .data$display_name, .data$first_name,
-        .data$last_name, .data$last_activity, .data$compute,
-        dplyr::starts_with("active"), dplyr::everything()
+        .data$user_id,
+        .data$display_name,
+        .data$first_name,
+        .data$last_name,
+        .data$last_activity,
+        .data$compute,
+        dplyr::starts_with("active"),
+        dplyr::everything()
       ) %>%
       # change type of compute to double
       dplyr::mutate(compute = as.double(.data$compute))
-
-
   } else {
     res <- response$results %>%
       tibble::enframe() %>%
@@ -340,7 +405,7 @@ space_member_usage <- function(space, filters = NULL) {
       tidyr::pivot_wider(names_from = .data$name, values_from = .data$value) %>%
       dplyr::mutate(
         # capture from and until dates of API call
-        from  = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
+        from = as.POSIXct(response$from / 1000, origin = "1970-01-01"),
         until = as.POSIXct(response$until / 1000, origin = "1970-01-01"),
         # make active_ variables integer
         dplyr::across(.cols = dplyr::contains("active_"), as.integer)
@@ -348,11 +413,18 @@ space_member_usage <- function(space, filters = NULL) {
 
     # true last_activity is only reported if the time window is less than or equal to 31 days
     # else last_activity is NA
-    if("last_activity" %in% names(res)){
+    if ("last_activity" %in% names(res)) {
       res <- res %>%
-        dplyr::mutate(last_activity = as.POSIXct(.data$last_activity / 1000, origin = "1970-01-01"))
-    } else{
-      warning("Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days.")
+        dplyr::mutate(
+          last_activity = as.POSIXct(
+            .data$last_activity / 1000,
+            origin = "1970-01-01"
+          )
+        )
+    } else {
+      warning(
+        "Reported `last_activity` is `NA` for all users. To get true `last_activity` use a `from` filter less than or equal to 31 days."
+      )
       res <- res %>%
         dplyr::mutate(last_activity = as.POSIXct(NA, origin = "1970-01-01"))
     }
