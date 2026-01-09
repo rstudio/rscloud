@@ -94,6 +94,130 @@ rscloud_space <- function(space_id = NULL, name = NULL) {
   }
 }
 
+#' Create a Space
+#'
+#' Creates a new space on RStudio Cloud.
+#'
+#' @param name The name of the space.
+#' @param account_id The ID of the account that will own the space.
+#' @param description Description of the space.
+#' @param access Space access method, either "closed" (default) or "protected".
+#' @param copy ID of an existing space to copy public projects from.
+#'
+#' @return An `rscloud_space` object.
+#' @export
+rscloud_space_create <- function(name,
+                                 account_id,
+                                 description = NULL,
+                                 access = c("closed", "protected"),
+                                 copy = NULL) {
+  
+  if (!rlang::is_scalar_character(name)) {
+    stop("`name` must be a single character string.", call. = FALSE)
+  }
+
+  if (!rlang::is_scalar_integerish(account_id)) {
+    stop("`account_id` must be a single integer.", call. = FALSE)
+  }
+
+  access <- match.arg(access)
+
+  data <- list(
+    name = name,
+    account_id = account_id
+  )
+
+  if (!is.null(description)) {
+    data$description <- description
+  }
+
+  if (!identical(access, "closed")) {
+    data$access <- access
+  }
+
+  if (!is.null(copy)) {
+    if (!rlang::is_scalar_integerish(copy)) {
+      stop("`copy` must be a single integer (space ID).", call. = FALSE)
+    }
+    data$copy <- copy
+  }
+
+  response <- rscloud_rest(
+    path = "spaces",
+    data = data,
+    verb = "POST"
+  )
+
+  parse_space_response(response) %>%
+    RSCloudSpace$new()
+}
+
+#' Archive a Space
+#'
+#' Archives a space on RStudio Cloud. Archiving a space removes all members,
+#' archives all content, and deletes any pending invitations.
+#'
+#' @inheritParams space_info
+#'
+#' @return The space object, invisibly.
+#' @export
+rscloud_space_archive <- function(space) {
+  response <- rscloud_rest(
+    path = c("spaces", space_id(space)),
+    data = list(state = "archived"),
+    verb = "PATCH"
+  )
+
+  invisible(space)
+}
+
+#' Restore a Space
+#'
+#' Restores an archived space on RStudio Cloud. Restoring a space adds the
+#' caller as a space admin and reactivates all archived content.
+#'
+#' @inheritParams space_info
+#'
+#' @return The space object, invisibly.
+#' @export
+rscloud_space_restore <- function(space) {
+  response <- rscloud_rest(
+    path = c("spaces", space_id(space)),
+    data = list(state = "active"),
+    verb = "PATCH"
+  )
+
+  invisible(space)
+}
+
+#' Delete a Space
+#'
+#' Deletes a space and all of its content from RStudio Cloud. This action
+#' cannot be undone.
+#'
+#' @inheritParams space_info
+#' @param ask Whether to prompt for confirmation before deleting. Defaults to `TRUE`.
+#'
+#' @return `NULL`, invisibly.
+#' @export
+rscloud_space_delete <- function(space, ask = TRUE) {
+  if (ask) {
+    really_delete <- are_you_sure(glue::glue(
+      "delete space `{space_id(space)}`"
+    ))
+    if (!really_delete) {
+      return(invisible(NULL))
+    }
+  }
+
+  rscloud_rest(
+    path = c("spaces", space_id(space)),
+    verb = "DELETE"
+  )
+
+  invisible(NULL)
+}
+
 #' Valid Roles for Space
 #'
 #' Returns valid roles for a given space and the permissions associated with each role.
